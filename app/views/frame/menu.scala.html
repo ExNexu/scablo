@@ -1,0 +1,21 @@
+@(user: Option[model.blog.User], menuPoint: model.ui.MenuPoint.Value)
+
+@display(linkUrl: String, iconClass: String, name: String) = {
+  <li class="@if(menuPoint.toString == name) {active}"><a href="@linkUrl"><i class="@iconClass"></i><span class="hidden-phone"> @name</span></a></li>
+}
+
+<div class="navbar navbar-inverse">
+  <div class="navbar-inner">
+    <div class="container">
+      <ul class="nav">
+        @display("/blog", "icon-home", "Home")
+        @display("/blog/about", "icon-info-sign", "About")
+        @if(user.isDefined) {
+          @display("/blog/admin", "icon-globe", "Admin")
+          }
+      </ul>
+      <!--<a class="brand pull-right" href="/"><span class="menu-brand">bleibinha.us/coding</span></a>-->
+      <a class="brand pull-right" href="/blog/rss"><i class="icon-rss"></i> Subscribe</a>
+    </div><!--/container -->
+  </div><!--/navbar-inner -->
+</div><!--/navbar -->

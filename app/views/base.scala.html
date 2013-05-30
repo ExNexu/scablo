@@ -1,0 +1,58 @@
+@(
+  title: String,
+  user: Option[model.blog.User],
+  menuPoint: model.ui.MenuPoint.Value,
+  adminLoginForm: Form[model.ui.LoginCredentials])(
+  addToHeaderHtml: Html)(
+  content: Html)(
+  addToBottomHtml: Html)
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>@title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="">
+    <meta name="author" content="">
+    
+    <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/main.min.css")">
+    @if(user.isDefined) {
+      <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/admin.min.css")">
+    }
+    <link rel="shortcut icon" href="@routes.Assets.at("images/favicon.ico")">
+    <link rel="alternate" type="application/rss+xml" title="RSS" href="/blog/rss">
+    
+    <link href="@routes.Assets.at("stylesheets/bootstrap/bootstrap.min.css")" rel="stylesheet">
+    <link href="@routes.Assets.at("stylesheets/bootstrap/responsive.min.css")" rel="stylesheet">
+    @addToHeaderHtml
+  </head>
+  <body>
+    <div id="wrap">
+      <div class="container">
+      @frame.header()
+      @frame.menu(user, menuPoint)
+      </div><!-- /container -->
+      
+      <div class="container">
+        @content
+      </div><!-- /container -->
+      <div id="push"></div>
+    </div><!-- /wrap -->
+    
+    @frame.footer(user, adminLoginForm)
+    
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+    <script src="//netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/js/bootstrap.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+    <script src="@routes.Assets.at("javascripts/main.min.js")" type="text/javascript"></script>
+    @if(user.isDefined) {
+      <script src="@routes.Assets.at("javascripts/admin.min.js")" type="text/javascript"></script>
+    }
+    @if(adminLoginForm.hasErrors) {
+      <script>showAdminPopover();</script>
+    }
+    @addToBottomHtml
+  </body>
+</html>

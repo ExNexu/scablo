@@ -1,0 +1,37 @@
+@(user: Option[model.blog.User], adminLoginForm: Form[model.ui.LoginCredentials])
+
+@import controllers.util.FieldConstructors._
+
+<div class="container">
+  <div id="footer">
+    <a name="footer"></a> 
+    <div id="footer-content" class="footer-content">
+      <div id="admin-popover-position"></div>
+      @user match {
+        case Some(user) => { <a class="pull-right" href="/blog/logout"><i class="icon-unlock footer-lock"></i></a> }
+        case None => { <a id="admin-popover-link" class="pull-right" href="#"><i class="icon-lock"></i></a> }
+        }
+      <div class="footer-text">
+        @branding.footerText()
+      </div>
+    </div>
+  </div><!--/footer -->
+</div><!--/container -->
+
+<div id="admin-popover-title" class="popover hide">
+  Admin login
+</div>
+<div id="admin-popover-content" class="popover hide">
+  @if(adminLoginForm.hasGlobalErrors) {
+      <div class="alert alert-error">
+        @adminLoginForm.globalErrors.map(_.message).mkString(", ")!
+      </div>
+    }
+  @helper.form(action = routes.BlogController.login) {
+    <fieldset>
+    @helper.inputText(adminLoginForm("Username"))
+    @helper.inputPassword(adminLoginForm("Password"))
+    <button type="submit" class="btn">Submit</button>
+    </fieldset>
+  }
+</div>

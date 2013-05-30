@@ -1,0 +1,9 @@
+@(elements: helper.FieldElements)
+
+<label for="@elements.id">@elements.label</label>
+@elements.input
+@if(elements.hasErrors) {
+<div class="alert alert-error">
+  @elements.errors.mkString(", ")!
+</div>
+}

@@ -1,0 +1,67 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# ~~~~
+# The order of this routes is the same as in the corresponding controllers.
+
+#
+# Reader actions => BlogController
+#
+# Home page / Index
+GET     /blog                                               controllers.BlogController.index
+# Show a specific post
+GET     /blog/$year<[0-9]+>/$month<[0-9]+>/:urlTitle        controllers.BlogController.showPost(year: Long, month: Long, urlTitle: String)
+# Get file
+GET     /blog/file/:name                                    controllers.BlogController.file(name: String)
+# Show posts from a certain time period
+GET     /blog/$year<[0-9]+>/$month<[0-9]+>                  controllers.BlogController.showPostsYearMonth(year: Long, month: Long)
+GET     /blog/$year<[0-9]+>                                 controllers.BlogController.showPostsYear(year: Long)
+# instant search
+GET     /blog/quicksearch                                   controllers.BlogController.quicksearch(term: String)
+# Loads more posts for the home page
+GET     /blog/more/$postIndex<[0-9]+>                       controllers.BlogController.more(postIndex: Long)
+# About
+GET     /blog/about                                         controllers.BlogController.about
+# Tag
+GET     /blog/tag/:tag                                      controllers.BlogController.showTag(tag: String)
+# search
+POST    /blog/search                                        controllers.BlogController.search
+# rss
+GET     /blog/rss                                           controllers.BlogController.rss
+# Login
+POST    /blog/login                                         controllers.BlogController.login
+# Logout
+GET     /blog/logout                                        controllers.BlogController.logout   
+
+#
+# Admin => AdminController
+#
+# Adminpage
+GET     /blog/admin                                         controllers.AdminController.admin
+# create Post
+GET     /blog/createPost                                    controllers.AdminController.createPost
+# edit Post (or draft)
+GET     /blog/editPost                                      controllers.AdminController.editPost(postId: Option[String])
+# delete Post
+GET     /blog/deletePost/:postId                            controllers.AdminController.deletePost(postId: String)
+# discard Draft
+GET     /blog/discardDraft                                  controllers.AdminController.discardDraft
+# edit PostForm Submit
+POST    /blog/editPostFormSubmit                            controllers.AdminController.editPostFormSubmit
+# show Draft
+GET     /blog/showDraft                                     controllers.AdminController.showDraft
+# publish Draft
+GET     /blog/publishDraft                                  controllers.AdminController.publishDraft
+# update about text
+POST    /blog/updateAbout                                   controllers.AdminController.updateAboutSubmit
+# upload file
+POST    /blog/uploadFile                                    controllers.AdminController.uploadFile
+# delete file
+GET     /blog/deleteFile/:name                              controllers.AdminController.deleteFile(name: String)
+
+#
+# Misc
+#
+# Map static resources from the /public folder to the /assets URL path
+GET     /blog/assets/*file                                  controllers.Assets.at(path="/public", file)
+# redirect top level
+GET   /                                                     controllers.Default.redirect(to = "/blog")

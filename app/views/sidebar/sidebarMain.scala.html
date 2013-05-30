@@ -1,0 +1,17 @@
+@(sidebarContainer: model.ui.SidebarContainer)
+
+@search()
+@tagcloud(
+  sidebarContainer.allTags,
+  sidebarContainer.bigTagMinCount,
+  sidebarContainer.middleTagMinCount,
+  sidebarContainer.activeTag)
+@recentComments()
+<div class="row-fluid sidebar">
+  <div class="span6">
+    @archive(sidebarContainer.archive)
+  </div>
+  <div class="span6">
+    @connect()
+  </div>
+</div><!-- /row-fluid -->

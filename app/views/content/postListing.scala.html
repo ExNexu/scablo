@@ -1,0 +1,13 @@
+@(title: String,
+  user: Option[model.blog.User],
+  breadcrumb: List[model.ui.BreadcrumbItem],
+  sidebarContainer: model.ui.SidebarContainer,
+  posts: List[model.blog.PostEnriched],
+  moreUrl: Option[String] = None)(
+  implicit adminLoginForm: Form[model.ui.LoginCredentials])
+
+@simpleMain(title, user, breadcrumb, sidebarContainer) {
+
+@postListingSnippet(posts, moreUrl)
+
+}

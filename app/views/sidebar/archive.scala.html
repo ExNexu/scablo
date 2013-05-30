@@ -1,0 +1,10 @@
+@(archive: List[model.ui.ArchiveItem])
+
+<div class="well">
+  <h4><i class="icon-book"></i> Archive</h4>
+  <ul class="icons">
+    @for(archiveItem <- archive) {
+      <li><i class="icon-angle-right"></i> <a href="/blog@archiveItem.link">@archiveItem.timeDisplay (@archiveItem.count)</a></li>
+    }
+  </ul>
+</div>

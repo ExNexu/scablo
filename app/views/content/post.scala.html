@@ -1,0 +1,56 @@
+@(title: String,
+  user: Option[model.blog.User],
+  breadcrumb: List[model.ui.BreadcrumbItem],
+  sidebarContainer: model.ui.SidebarContainer,
+  post: Option[model.blog.PostEnriched] = None,
+  draftMode: Boolean = false)(
+  implicit adminLoginForm: Form[model.ui.LoginCredentials])
+
+@simpleMain(title, user, breadcrumb, sidebarContainer) {
+
+<div class="well">
+  @post match {
+    case Some(post) => {
+      <a href="/blog/@post.relUrl"><h3>@post.title</h3></a>
+      <p class="muted">
+        <small>Posted on <a href="/blog/@post.createdDateRelUrl">@post.createdString</a> by <a href="/blog/about">@post.author.name</a>
+        @if(post.createdString != post.updatedString) {
+          (updated <a href="/blog/@post.updatedDateRelUrl">@post.updatedString</a>)
+        }
+        </small>
+      </p>
+      @if(!post.tags.isEmpty) {
+        <p class="post-tags">
+          <small><i class="icon-tags"></i> <strong>Tags: </strong></small>
+          @for(tag <- post.tags) {
+            <a href="/blog/tag/@tag"><span class="tag"> @tag </span></a>
+          }
+        </p>
+      }
+      <div class="compiledText">
+        @Html(post.compiledText)
+      </div>
+      @if(user.isDefined) {
+        <div class="user-post-options">
+          <a class="btn btn-small" href="/blog/editPost@if(post.id.isDefined) {?postId=@post.id.get}"><i class="icon-edit"></i> Edit post</a>
+          @if(draftMode) {
+            <a id="discardDraftLink" class="btn btn-small" href="/blog/discardDraft"><i class="icon-trash"></i> Discard draft</a>
+            <a class="btn btn-small" href="/blog/publishDraft"><i class="icon-save"></i> Publish draft</a>
+          } else {
+            <a id="deletePostLink" class="btn btn-small" href="/blog/deletePost/@post.id.get"><i class="icon-trash"></i> Delete post</a>
+          }
+        </div>
+      }
+      @if(post.id.isDefined && !draftMode) {
+        <div class="well">
+          @branding.postComments(post.id.get, post.title)
+        </div>
+      }
+    }
+  case None => {
+      Post not found
+    }
+  }
+</div>
+
+}

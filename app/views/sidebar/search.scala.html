@@ -1,0 +1,13 @@
+@()
+
+@import helper.form
+
+<div class="well">
+  <h4><i class="icon-search"></i> Search</h4>
+  @form(action = routes.BlogController.search, 'class -> "form-search") {
+    <div class="input-append">
+      <input id="searchField" name="searchFieldInput" type="text" class="search-text-input" placeholder="Search">
+      <button type="submit" class="btn"><i class="icon-search"></i></button>
+    </div>
+  }
+</div>

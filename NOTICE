@@ -1,0 +1,23 @@
+This product bundles parts of Codemirror, which is available under a
+"MIT-style" license.  For details, see app/assets/javascripts/codemirror and app/assets/stylesheets/codemirror.
+
+This product bundles parts of Jasny Bootstrap, which is available under an
+"Apache 2.0" license.  For details, see app/assets/javascripts/jasny and app/assets/stylesheets/jasny.
+
+This product bundles parts of a slightly modified version of Bootstrap, which is available under an
+"Apache 2.0" license.  For details, see app/assets/stylesheets/bootstrap.
+
+This product bundles parts of jQuery UI, which is available under a
+"MIT-style" license.  For details, see app/assets/stylesheets/jqueryui.
+
+This product bundles parts of CKEditor, which is available under a
+"MPL-style" license.  For details, see public/ckeditor.
+
+This product bundles parts of Font Awesome, which are available under a
+"SIL OFL 1.1" license, which is available at http://scripts.sil.org/OFL.
+The parts of Font Awesome used are found in public/font-awesome.
+Font Awesome by Dave Gandy - http://fontawesome.io.
+
+This product bundles images by Stefan Bleibinhaus, which are available under a
+"Creative Commons (CC BY-SA 3.0)" license, which is available at http://creativecommons.org/licenses/by-sa/3.0/.
+Those images are found in public/images.

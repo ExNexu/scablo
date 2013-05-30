@@ -1,0 +1,38 @@
+/*
+* part of main.less
+*/
+
+/*
+* sidebar
+*/
+
+.row-fluid.sidebar {
+  .span6 {
+    /* Portrait tablet to landscape and desktop + desktop */
+    @media (min-width: 768px) and (max-width: 1199px) {
+      float: none;
+      width: 100%;
+      margin-left: auto;
+      margin-right: auto;
+    }
+  }
+}
+
+/*
+* search
+*/
+
+.search-text-input {
+  /* Large desktop */
+  @media (min-width: 1200px) {
+    width: 203px;
+  }
+  /* desktop */
+  @media (min-width: 980px) and (max-width: 1199px) {
+    width: 170px;
+  }
+  /* Portrait tablet to landscape and desktop */
+  @media (min-width: 768px) and (max-width: 979px) {
+    width: 120px;
+  }
+}

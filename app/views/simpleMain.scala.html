@@ -1,0 +1,18 @@
+@(
+  title: String,
+  user: Option[model.blog.User],
+  breadcrumb: List[model.ui.BreadcrumbItem],
+  sidebarContainer: model.ui.SidebarContainer,
+  menuPoint: model.ui.MenuPoint.Value = model.ui.MenuPoint.Home)(
+  content: Html)(
+  implicit adminLoginForm: Form[model.ui.LoginCredentials])
+
+@main(title, user, breadcrumb, sidebarContainer, menuPoint) {
+
+}{
+
+}{
+
+@content
+
+}

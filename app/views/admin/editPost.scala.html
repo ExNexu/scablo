@@ -1,0 +1,44 @@
+@(title: String,
+  user: Option[model.blog.User],
+  breadcrumb: List[model.ui.BreadcrumbItem],
+  sidebarContainer: model.ui.SidebarContainer,
+  draftForm: Form[model.ui.PostDraft])(
+  implicit adminLoginForm: Form[model.ui.LoginCredentials])
+
+@import controllers.util.FieldConstructors._
+
+@main(title, user, breadcrumb, sidebarContainer, model.ui.MenuPoint.Admin) {
+  
+<link href="@routes.Assets.at("stylesheets/codemirror/codemirror.min.css")" rel="stylesheet">
+<link href="@routes.Assets.at("stylesheets/codemirror/show-hint.min.css")" rel="stylesheet">
+
+} {
+
+<script src="@routes.Assets.at("javascripts/codemirror/codemirror.min.js")" type="text/javascript"></script>
+<script src="@routes.Assets.at("javascripts/codemirror/xml.min.js")" type="text/javascript"></script>
+<script src="@routes.Assets.at("javascripts/codemirror/show-hint.min.js")" type="text/javascript"></script>
+<script src="@routes.Assets.at("javascripts/codemirror/xml-hint.min.js")" type="text/javascript"></script>
+<script src="@routes.Assets.at("javascripts/codemirror/closetag.min.js")" type="text/javascript"></script>
+<script src="@routes.Assets.at("javascripts/codemirror/foldcode.min.js")" type="text/javascript"></script>
+<script src="@routes.Assets.at("javascripts/codemirror/xml-fold.min.js")" type="text/javascript"></script>
+<script src="@routes.Assets.at("javascripts/editpost.min.js")" type="text/javascript"></script>
+
+} {
+
+<div class="well">
+  @if(draftForm.hasGlobalErrors) {
+      <div class="alert alert-error">
+        @draftForm.globalErrors.map(_.message).mkString(", ")
+      </div>
+    }
+  @helper.form(action = routes.AdminController.editPostFormSubmit) {
+    @helper.inputText(draftForm("id"), 'readonly -> "readonly")
+    @helper.inputText(draftForm("Title"))
+    @helper.textarea(draftForm("Text"))
+    @helper.inputText(draftForm("Tags"))
+    <div class="bottom-space"></div>
+    <button type="submit" class="btn"><i class="icon-desktop"></i> Preview</button>
+  }
+</div>
+
+}

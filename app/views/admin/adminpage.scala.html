@@ -1,0 +1,62 @@
+@(title: String,
+  user: Option[model.blog.User],
+  sidebarContainer: model.ui.SidebarContainer,
+  files: List[model.blog.FileRef]
+  )(
+  implicit adminLoginForm: Form[model.ui.LoginCredentials])
+  
+@import helper.form
+
+@main(title, user, Nil, sidebarContainer, model.ui.MenuPoint.Admin) {
+
+<link href="@routes.Assets.at("stylesheets/jasny/bootstrap-fileupload.min.css")" rel="stylesheet">
+
+} {
+
+<script src="@routes.Assets.at("javascripts/jasny/bootstrap-fileupload.min.js")" type="text/javascript"></script>
+
+} {
+
+<div class="well">
+  <h3>Admin area</h3>
+  
+  <div class="admin-area-point">
+    <h4>Posts</h4>
+    <a class="btn" href="/blog/createPost"><i class="icon-edit"></i> Create Post</a>
+  </div>
+
+  <div class="admin-area-point">
+    <h4>Files</h4>
+    <h5>Upload</h5>
+    @form(action = routes.AdminController.uploadFile, 'enctype -> "multipart/form-data") {
+      <div class="fileupload fileupload-new" data-provides="fileupload">
+        <div class="input-append">
+          <div class="uneditable-input span3"><i class="icon-file fileupload-exists"></i> <span class="fileupload-preview"></span></div><span class="btn btn-file"><span class="fileupload-new">Select file</span><span class="fileupload-exists">Change</span><input name="file" type="file" /></span><a href="#" class="btn fileupload-exists" data-dismiss="fileupload">Remove</a>
+        </div>
+      </div>
+      <input class="btn" type="submit">
+    }
+    @if(!files.isEmpty) {
+      <h5>List</h5>
+        <table class="table table-striped">
+        <tr>
+          <th>Uploaded</th>
+          <th>Filename</th>
+          <th>Options</th>
+        @for(file <- files) {
+          <tr>
+            <td><a href="/blog@file.uploadedPostsLink">@file.uploadedString</a></td>
+            <td><a href="/blog/file/@file.name">@file.name</a></td>
+            <td>
+              <a class="deleteFileLink btn btn-small" href="/blog/deleteFile/@file.name">
+                <i class="icon-trash"></i> Delete file
+              </a>
+            </td>
+          </tr>
+        }
+      </table>
+    }
+  </div>
+</div>
+
+}

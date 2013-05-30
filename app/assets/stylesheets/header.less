@@ -1,0 +1,62 @@
+/*
+* part of main.less
+*/
+
+/*
+* mixin: no-link-style
+*/
+
+.no-link-style-base (@link-color: @black) {
+    a:link {
+      color: @link-color;
+      text-decoration: none
+    }
+    a:visited {
+      color: @link-color;
+      text-decoration: none
+    }
+    a:active {
+      color: @link-color;
+      text-decoration: none
+    }
+    a:hover {
+      color: @link-color;
+      text-decoration: none
+    }
+}
+
+/*
+* header
+*/
+
+@header-div-margin: 10px;
+
+.header {
+  .no-link-style-base;
+  font-family: @monoFontFamily;
+  margin: @baseLineHeight 0 (@baseLineHeight - @header-div-margin);
+  div {
+    margin-bottom:@header-div-margin;
+    display:inline-block;
+  }
+  /* Large desktop */
+  @media (min-width: 1200px) {
+    margin-left: 20px;
+  }
+  /* desktop */
+  @media (min-width: 980px) and (max-width: 1199px) {
+    margin-left: 20px;
+  }
+  /* Portrait tablet to landscape and desktop */
+  @media (min-width: 768px) and (max-width: 979px) {
+    margin-left: 20px;
+  }
+  /* Phones only */
+  @media (max-width: 767px) {
+    margin-left:auto;
+    margin-right:auto;
+    h1 {
+      text-align:center;
+    }
+  }
+}

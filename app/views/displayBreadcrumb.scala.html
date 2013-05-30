@@ -1,0 +1,33 @@
+@(breadcrumb: List[model.ui.BreadcrumbItem])
+
+@display(breadcrumbItem: model.ui.BreadcrumbItem) = {
+    @(breadcrumbItem.link, breadcrumbItem.icon) match {
+        case (Some(link), Some(icon)) => {
+          <a href="@link"><i class="@icon"></i> @breadcrumbItem.name</a>
+        }
+        case (Some(link), None) => {
+          <a href="@link">@breadcrumbItem.name</a>
+        }
+        case (None, Some(icon)) => {
+          <i class="@icon"></i> @breadcrumbItem.name
+        }
+        case _ => {
+          @breadcrumbItem.name
+        }
+      }
+}
+
+@if(breadcrumb.size < 2) {
+  
+} else {
+
+<div>
+  <ul class="breadcrumb breadcrumb-well">
+    <li>@display(breadcrumb.head)</li>
+    @for(breadcrumbItem <- breadcrumb.tail) {
+      <li><span class="divider">/</span> @display(breadcrumbItem)</li>
+    }
+  </ul>
+</div>
+  
+}

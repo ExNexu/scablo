@@ -1,0 +1,35 @@
+@(title: String,
+  user: Option[model.blog.User],
+  sidebarContainer: model.ui.SidebarContainer,
+  text: String
+  )(implicit adminLoginForm: Form[model.ui.LoginCredentials])
+
+@main(title, user, Nil, sidebarContainer, model.ui.MenuPoint.About) {
+
+} {
+
+@if(user.isDefined) {
+  <script src="@routes.Assets.at("ckeditor/ckeditor.js")" type="text/javascript"></script>
+  <script src="@routes.Assets.at("javascripts/about.min.js")" type="text/javascript"></script>
+}
+
+} {
+
+<div class="well">
+
+  @if(user.isDefined) {
+    <div id="aboutEdit" class="aboutDiv" contenteditable="true">
+      @Html(text)
+    </div>
+    <div class="user-about-options">
+      <button onclick="updateAboutText()" type="submit" class="btn btn-small"><i class="icon-save"></i> Save update</button>
+    </div>
+  } else {
+    <div class="aboutDiv">
+      @Html(text)
+    </div>
+  }
+
+</div>
+
+}

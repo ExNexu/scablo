@@ -1,0 +1,44 @@
+@(posts: List[model.blog.PostEnriched], moreUrl: Option[String])
+
+@if(posts.isEmpty) {
+  <div class="well">
+    No posts here
+  </div>
+} else {
+  @for(post <- posts) {
+    <div class="well">
+      <a href="/blog/@post.relUrl"><h3>@post.title</h3></a>
+      <p class="muted">
+        <small>Posted on <a href="/blog/@post.createdDateRelUrl">@post.createdString</a> by <a href="/blog/about">@post.author.name</a>
+          @if(post.createdString != post.updatedString) {
+            (updated <a href="/blog/@post.updatedDateRelUrl">@post.updatedString</a>)
+          }
+        </small>
+      </p>
+      @if(!post.tags.isEmpty) {
+        <p class="post-tags">
+        <small><i class="icon-tags"></i>  <strong>Tags: </strong></small>
+        @for(tag <- post.tags) {
+          <a href="/blog/tag/@tag"><span class="tag"> @tag </span></a>
+        }
+        </p>
+      }
+      <p class="intro">
+        @Html(post.compiledAbstract)
+      </p>
+      <p>
+        <a href="/blog/@post.relUrl">Read more <i class="icon-caret-right"></i></a>
+      </p>
+    </div>
+  }
+  @moreUrl.map { moreUrl =>
+    @defining("div"+posts.head.id.get) { divId =>
+      <div id="@divId">
+        <a name="@divId"></a>
+      </div>
+      <ul id="morePager" class="pager">
+        <li><a onclick="loadMore(event,'@divId','@moreUrl')" href="#">More</a></li>
+      </ul>
+    }
+  }
+}

@@ -1,0 +1,48 @@
+@(allTags: List[model.blog.Tag], bigTagMinCount: Int, middleTagMinCount: Int, activeTag: Option[String])
+
+<div class="well">
+  <h4><i class="icon-tags"></i> Tagcloud</h4>
+  <div class="tagcloud">
+    @for(tag <- allTags) {
+        @if(activeTag.isDefined) {
+          @tag.count match {
+            case n if n >= bigTagMinCount => {
+              @if(activeTag.get == tag.name) {
+                <a href="/blog"><span class="tag tag-big tag-active">@tag.name</span></a>
+              } else {
+                <a href="/blog/tag/@tag.name"><span class="tag tag-big">@tag.name</span></a>
+              }
+            }
+            case n if n >= middleTagMinCount => {
+              @if(activeTag.get == tag.name) {
+                <a href="/blog"><span class="tag tag-middle tag-active">@tag.name</span></a>
+              } else {
+                <a href="/blog/tag/@tag.name"><span class="tag tag-middle">@tag.name</span></a>
+              }
+            }
+            case _ => {
+              @if(activeTag.get == tag.name) {
+                <a href="/blog"><span class="tag tag-small tag-active">@tag.name</span></a>
+              } else {
+                <a href="/blog/tag/@tag.name"><span class="tag tag-small">@tag.name</span></a>
+              }
+            }
+          }
+        } else {
+          <a href="/blog/tag/@tag.name">
+            @tag.count match {
+              case n if n >= bigTagMinCount => {
+                <span class="tag tag-big">@tag.name</span>
+              }
+              case n if n >= middleTagMinCount => {
+                <span class="tag tag-middle">@tag.name</span>
+              }
+              case _ => {
+                <span class="tag tag-small">@tag.name</span>
+              }
+            }
+          </a>
+        }
+      }
+  </div>
+</div>
