@@ -8,6 +8,7 @@
 #
 # Home page / Index
 GET     /blog                                               controllers.BlogController.index
+GET     /blog/                                              controllers.BlogController.index
 # Show a specific post
 GET     /blog/$year<[0-9]+>/$month<[0-9]+>/:urlTitle        controllers.BlogController.showPost(year: Long, month: Long, urlTitle: String)
 # Get file
