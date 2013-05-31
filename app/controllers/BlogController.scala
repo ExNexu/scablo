@@ -4,10 +4,10 @@ import scala.concurrent.ExecutionContext.Implicits.global
 
 import org.joda.time.DateTime
 
-import model.blog.{ PostEnriched, StaticPage }
-import model.ui.{ BreadcrumbItem, SidebarContainer }
+import model.blog.{PostEnriched, StaticPage}
+import model.ui.{BreadcrumbItem, MetaTags, SidebarContainer}
 import play.api.Play
-import play.api.data.{ Form, FormError }
+import play.api.data.{Form, FormError}
 import play.api.data.Forms.nonEmptyText
 import play.api.libs.json.Json
 import play.api.mvc.Action
@@ -46,6 +46,7 @@ object BlogController extends BaseController {
             val breadcrumb = List(homeBcItem)
             Ok(views.html.content.postListing(
               title(),
+              MetaTags(),
               userOption,
               breadcrumb,
               SidebarContainer(),
@@ -80,6 +81,7 @@ object BlogController extends BaseController {
                 BreadcrumbItem(enrichedPost.title, "/blog/" + relUrl, "icon-caret-right"))
               Ok(views.html.content.post(
                 title(enrichedPost.title),
+                MetaTags(enrichedPost),
                 userOption,
                 breadcrumb,
                 SidebarContainer(),
@@ -92,8 +94,10 @@ object BlogController extends BaseController {
                 BreadcrumbItem(year.toString, "/blog/" + year),
                 BreadcrumbItem(monthString, "/blog/" + year + "/" + monthString),
                 BreadcrumbItem("Post \"" + urlTitle + "\" not found", None, Some("icon-exclamation-sign")))
+              val pagename = "Post not found"
               Ok(views.html.content.post(
-                title("Post not found"),
+                title(pagename),
+                MetaTags(pagename),
                 userOption,
                 breadcrumb,
                 SidebarContainer()))
@@ -139,8 +143,10 @@ object BlogController extends BaseController {
               homeBcItem,
               BreadcrumbItem(year.toString, "/blog/" + year, "icon-calendar"),
               BreadcrumbItem(monthString, "/blog/" + year + "/" + monthString))
+            val pagename = year + "/" + monthString
             Ok(views.html.content.postListing(
-              title(year + "/" + monthString),
+              title(pagename),
+              MetaTags(pagename),
               userOption,
               breadcrumb,
               SidebarContainer(),
@@ -164,8 +170,10 @@ object BlogController extends BaseController {
             val breadcrumb = List(
               homeBcItem,
               BreadcrumbItem(year.toString, "/blog/" + year, "icon-calendar"))
+            val pagename = year.toString
             Ok(views.html.content.postListing(
-              title(year.toString),
+              title(pagename),
+              MetaTags(pagename),
               userOption,
               breadcrumb,
               SidebarContainer(),
@@ -227,7 +235,13 @@ object BlogController extends BaseController {
         userOption =>
           {
             val aboutPage = staticPageDataService.getByName("about").getOrElse(StaticPage("about"))
-            Ok(views.html.about.aboutpage(title("About"), userOption, SidebarContainer(), aboutPage.text))
+            val pagename = "About"
+            Ok(views.html.about.aboutpage(
+              title(pagename),
+              MetaTags(pagename),
+              userOption,
+              SidebarContainer(),
+              aboutPage.text))
           }
       }
   }
@@ -246,8 +260,10 @@ object BlogController extends BaseController {
             val breadcrumb = List(
               homeBcItem,
               BreadcrumbItem(tag, "/blog/tag/" + tag, "icon-tag"))
+            val pagename = "Tag: " + tag
             Ok(views.html.content.postListing(
-              title("Tag: " + tag),
+              title(pagename),
+              MetaTags(pagename),
               userOption,
               breadcrumb,
               SidebarContainer(tag),
@@ -276,8 +292,10 @@ object BlogController extends BaseController {
                   BreadcrumbItem("\"" + term + "\"", None, Some("icon-search")))
                 Async {
                   searchResult map { searchResult =>
+                    val pagename = "Search: \"" + term + "\""
                     Ok(views.html.content.postListing(
-                      title("Search: \"" + term + "\""),
+                      title(pagename),
+                      MetaTags(pagename),
                       userOption,
                       breadcrumb,
                       SidebarContainer(),
@@ -340,6 +358,7 @@ object BlogController extends BaseController {
             val breadcrumb = List(homeBcItem)
             BadRequest(
               views.html.content.postListing(title(),
+                MetaTags(),
                 None,
                 breadcrumb,
                 SidebarContainer(),
@@ -355,6 +374,7 @@ object BlogController extends BaseController {
                 BadRequest(
                   views.html.content.postListing(
                     title(),
+                    MetaTags(),
                     None,
                     breadcrumb,
                     SidebarContainer(),

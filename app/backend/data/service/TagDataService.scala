@@ -1,7 +1,6 @@
 package backend.data.service
 
-import model.blog.{ Post, Tag }
-import play.api.Play.current
+import model.blog.{Post, Tag}
 
 /**
   * The data service trait for tags
@@ -10,6 +9,11 @@ import play.api.Play.current
   *
   */
 trait TagDataService extends PostChangeListener {
+  /**
+    * All tags sorted by their count as a comma separated list in a String
+    */
+  var keywords: String = ""
+
   private var tagsList: List[Tag] = Nil
   private var bigMinCount: Int = 0
   private var middleMinCount: Int = 0
@@ -51,11 +55,12 @@ trait TagDataService extends PostChangeListener {
 
   private def updateTagsInfo() = {
     /*
-     * tagsList
+     * tagsList and keywordsList
      */
     val allPosts = postDataService.allAsList
     val allTags = allPosts.flatMap(_.tags)
     tagsList = allTags.distinct.map(key => Tag(key, allTags.count(_ == key))).sortBy(tag => tag.name)
+    keywords = tagsList.sortBy(-_.count).map(_.name).mkString(",")
     /*
      * counts
      */

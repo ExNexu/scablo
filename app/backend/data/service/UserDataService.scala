@@ -44,4 +44,13 @@ trait UserDataService extends BaseDataService[User] {
         cachedUser = newUser
         newUser
     }
+
+  /**
+    * @return the user name (of the only user)
+    */
+  def getUsername(): String =
+    cachedUser match {
+      case Some(user) => user.name
+      case _ => ""
+    }
 }

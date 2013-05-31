@@ -1,5 +1,6 @@
 @(
   title: String,
+  metaTags: model.ui.MetaTags,
   user: Option[model.blog.User],
   breadcrumb: List[model.ui.BreadcrumbItem],
   sidebarContainer: model.ui.SidebarContainer,
@@ -9,7 +10,7 @@
   content: Html)(
   implicit adminLoginForm: Form[model.ui.LoginCredentials])
 
-@base(title, user, menuPoint, adminLoginForm) {
+@base(title, metaTags, user, menuPoint, adminLoginForm) {
 
 <link href="@routes.Assets.at("stylesheets/jqueryui/jquery-ui.min.css")" rel="stylesheet">
 

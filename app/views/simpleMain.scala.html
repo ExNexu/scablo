@@ -1,5 +1,6 @@
 @(
   title: String,
+  metaTags: model.ui.MetaTags,
   user: Option[model.blog.User],
   breadcrumb: List[model.ui.BreadcrumbItem],
   sidebarContainer: model.ui.SidebarContainer,
@@ -7,7 +8,7 @@
   content: Html)(
   implicit adminLoginForm: Form[model.ui.LoginCredentials])
 
-@main(title, user, breadcrumb, sidebarContainer, menuPoint) {
+@main(title, metaTags, user, breadcrumb, sidebarContainer, menuPoint) {
 
 }{
 

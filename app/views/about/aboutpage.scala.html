@@ -1,10 +1,11 @@
 @(title: String,
+  metaTags: model.ui.MetaTags,
   user: Option[model.blog.User],
   sidebarContainer: model.ui.SidebarContainer,
   text: String
   )(implicit adminLoginForm: Form[model.ui.LoginCredentials])
 
-@main(title, user, Nil, sidebarContainer, model.ui.MenuPoint.About) {
+@main(title, metaTags, user, Nil, sidebarContainer, model.ui.MenuPoint.About) {
 
 } {
 

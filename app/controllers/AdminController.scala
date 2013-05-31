@@ -1,11 +1,11 @@
 package controllers
 
 import backend.engine.TextCompileException
-import model.blog.{ PostEnriched, StaticPage, User }
-import model.ui.{ BreadcrumbItem, PostDraft, SidebarContainer }
-import play.api.data.{ Form, FormError }
-import play.api.data.Forms.{ mapping, nonEmptyText, text }
-import play.api.mvc.{ Action, SimpleResult }
+import model.blog.{PostEnriched, StaticPage, User}
+import model.ui.{BreadcrumbItem, MetaTags, PostDraft, SidebarContainer}
+import play.api.data.{Form, FormError}
+import play.api.data.Forms.{mapping, nonEmptyText, text}
+import play.api.mvc.{Action, SimpleResult}
 
 /**
   * The admin controller contains all admin actions.
@@ -343,6 +343,7 @@ object AdminController extends BaseController {
         BreadcrumbItem(enrichedPost.title, "/blog/" + enrichedPost.relUrl, "icon-caret-right"))
       Ok(views.html.content.post(
         title(draft.title),
+        MetaTags("", "", ""),
         Some(user),
         breadcrumb,
         SidebarContainer(),

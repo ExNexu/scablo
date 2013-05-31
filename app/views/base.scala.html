@@ -1,5 +1,6 @@
 @(
   title: String,
+  metaTags: model.ui.MetaTags,
   user: Option[model.blog.User],
   menuPoint: model.ui.MenuPoint.Value,
   adminLoginForm: Form[model.ui.LoginCredentials])(
@@ -14,8 +15,9 @@
     <meta charset="utf-8">
     <title>@title</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="">
-    <meta name="author" content="">
+    <meta name="description" content="@metaTags.description">
+    <meta name="keywords" content="@metaTags.keywords">
+    <meta name="author" content="@metaTags.author">
     
     <link rel="stylesheet" media="screen" href="@routes.Assets.at("stylesheets/main.min.css")">
     @if(user.isDefined) {
