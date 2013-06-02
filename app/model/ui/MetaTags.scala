@@ -19,6 +19,7 @@ case class MetaTags(
   val author: String)
 
 object MetaTags {
+  val empty = MetaTags("", "", "")
   private val userDataService: UserDataService = UserDataServiceMongo
   private val tagDataService: TagDataService = TagDataServiceMongo
   private val blogTitle =

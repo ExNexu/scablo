@@ -1,6 +1,6 @@
 package backend.data.service
 
-import model.blog.{Post, Tag}
+import model.blog.{ Post, Tag }
 
 /**
   * The data service trait for tags
@@ -9,14 +9,10 @@ import model.blog.{Post, Tag}
   *
   */
 trait TagDataService extends PostChangeListener {
-  /**
-    * All tags sorted by their count as a comma separated list in a String
-    */
-  var keywords: String = ""
-
   private var tagsList: List[Tag] = Nil
   private var bigMinCount: Int = 0
   private var middleMinCount: Int = 0
+  private var keywordsString: String = ""
 
   postDataService.addPostChangeListener(this)
   updateTagsInfo()
@@ -37,6 +33,11 @@ trait TagDataService extends PostChangeListener {
   def middleTagMinCount(): Int = middleMinCount
 
   /**
+    * @return All tags sorted by their count as a comma separated list in a String
+    */
+  def keywords(): String = keywordsString
+
+  /**
     * Gets tags which have the given term in their name
     *
     * @param term
@@ -55,12 +56,12 @@ trait TagDataService extends PostChangeListener {
 
   private def updateTagsInfo() = {
     /*
-     * tagsList and keywordsList
+     * tagsList and keywordsString
      */
     val allPosts = postDataService.allAsList
     val allTags = allPosts.flatMap(_.tags)
     tagsList = allTags.distinct.map(key => Tag(key, allTags.count(_ == key))).sortBy(tag => tag.name)
-    keywords = tagsList.sortBy(-_.count).map(_.name).mkString(",")
+    keywordsString = tagsList.sortBy(-_.count).map(_.name).mkString(",")
     /*
      * counts
      */
