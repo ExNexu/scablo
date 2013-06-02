@@ -8,12 +8,8 @@ $('#searchField').autocomplete(
       open: -> $(this).autocomplete('widget').css('z-index', 9999)
       select: (event, ui) ->
         item = ui.item
-        if item.type == 'post' 
-          location = item.url
-          window.open(location, '_self', false)
-        else if item.type == 'tag'
-          location = item.url
-          window.open(location, '_self', false)
+        location = item.url
+        window.open(location, '_self', false)
 ).data('ui-autocomplete')._renderItem = (ul, item) ->
     if item.type == 'post'
       icon = '<i class="icon-caret-right"></i>'
