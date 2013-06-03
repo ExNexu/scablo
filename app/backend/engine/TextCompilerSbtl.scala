@@ -14,6 +14,7 @@ import play.api.Play
 // TODO: Make it thread safe, use more functional style, make it less accepting of misused sbtl, testing...
 class TextCompilerSbtl() extends TextCompiler {
   private val blogUrl = Play.current.configuration.getString("blogUrl").getOrElse("http://bleibinha.us/blog")
+  private val baseBlogUrl = blogUrl.substring(0, blogUrl.indexOf("/blog"))
   private val externEvidence = "://"
   private val fileHostUrl = blogUrl + "/file/"
   private var footnotes: List[Footnote] = Nil
@@ -197,7 +198,7 @@ class TextCompilerSbtl() extends TextCompiler {
     val titleText = getTitleTextForRef(link, author, title)
     link match {
       case Some(link) if !link.contains(externEvidence) =>
-        <a href={ blogUrl + link } title={ titleText } target="_blank">{ contents } { "[" + number + "]" }</a>
+        <a href={ baseBlogUrl + link } title={ titleText } target="_blank">{ contents } { "[" + number + "]" }</a>
       case Some(link) =>
         <a href={ link } title={ titleText } target="_blank">
           { contents }
@@ -211,7 +212,7 @@ class TextCompilerSbtl() extends TextCompiler {
   private def getTitleTextForRef(link: Option[String], author: Option[String], title: Option[String]): String = {
     val shownLink = link match {
       case Some(link) if link.contains(externEvidence) => Some(link)
-      case Some(link) => Some(blogUrl + link)
+      case Some(link) => Some(baseBlogUrl + link)
       case None => None
     }
     (shownLink, author, title) match {
