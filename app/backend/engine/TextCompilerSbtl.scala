@@ -370,12 +370,33 @@ class TextCompilerSbtl() extends TextCompiler {
           case <text>{ contents @ _* }</text> => NodeSeq.Empty
           case <b>{ contents @ _* }</b> => <b>{ compilePreviewAbstract(contents) }</b>
           case <i>{ contents @ _* }</i> => <i>{ compilePreviewAbstract(contents) }</i>
-          case <ref>{ contents @ _* }</ref> => compilePreviewAbstract(contents)
+          case ref @ <ref>{ contents @ _* }</ref> => compilePreviewRef(ref, contents)
           case <footnote>{ contents @ _* }</footnote> => NodeSeq.Empty
           case contents if !contents.exists(_.toString.exists(_ == '<')) => contents
           case contents => throw new TextCompileException("Could not compile " + contents + " for abstract!")
         }
     }
+
+  private def compilePreviewRef(refNode: Node, refContent: NodeSeq): NodeSeq = {
+    val link = getAttribute(refNode, "link")
+    link match {
+      case Some(link) =>
+        {
+          val author = getAttribute(refNode, "author")
+          val title = getAttribute(refNode, "title")
+          val contents = compile(refContent)
+          val titleText = getTitleTextForRef(Some(link), author, title)
+          if (!link.contains(externEvidence))
+            <a href={ baseBlogUrl + link } title={ titleText } target="_blank">{ contents }</a>
+          else
+            <a href={ link } title={ titleText } target="_blank">
+             { contents }
+             <i class="icon-external-link"></i>
+            </a>
+        }
+      case None => compilePreviewAbstract(refContent)
+    }
+  }
 
   private case class InternReference(val name: String, val title: String)
   private case class Footnote(val number: Int, val content: NodeSeq)
