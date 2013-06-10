@@ -51,15 +51,15 @@ class TextCompilerSbtl() extends TextCompiler {
         parseReferences()
       else
         NodeSeq.Empty
-    val contentCompiled =
+    val contentsCompiled =
       if (!headers.isEmpty)
-        parseContent()
+        parseContents()
       else
         throw new TextCompileException("Content is empty!")
     val textAbstractCompiled = compileIntRefs(textAbstractCompiled1)
     val textCompiled = compileIntRefs(textCompiled1)
     val footnotesCompiled = compileIntRefs(footnotesCompiled1)
-    Xhtml.toXhtml(textAbstractCompiled ++ contentCompiled ++ textCompiled ++ footnotesCompiled ++ refsCompiled)
+    Xhtml.toXhtml(textAbstractCompiled ++ contentsCompiled ++ textCompiled ++ footnotesCompiled ++ refsCompiled)
   }
 
   private def compileText(nodes: NodeSeq): NodeSeq =
@@ -303,7 +303,7 @@ class TextCompilerSbtl() extends TextCompiler {
     }
   }
 
-  private def parseContent(): NodeSeq = {
+  private def parseContents(): NodeSeq = {
     val headersXml =
       for (headers1 <- headers) yield {
         val h1Href = headers1.head.name match {
@@ -328,7 +328,7 @@ class TextCompilerSbtl() extends TextCompiler {
         else
           h1 ++ <ul>{ h2s }</ul>
       }
-    <hr/><div class="content"><h4>Contents</h4><ul>{ headersXml }</ul></div><hr/>
+    <hr/><div class="contents"><h4>Contents</h4><ul>{ headersXml }</ul></div><hr/>
   }
 
   private def compileFootnote(nodes: NodeSeq): NodeSeq = {
