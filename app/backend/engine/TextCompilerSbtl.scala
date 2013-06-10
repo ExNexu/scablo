@@ -6,11 +6,11 @@ import scala.xml.NodeSeq.seqToNodeSeq
 import play.api.Play
 
 /**
-  * A class implementing the compile method of the TextCompiler. The class is NOT thread safe!
-  *
-  * @author Stefan Bleibinhaus
-  *
-  */
+ * A class implementing the compile method of the TextCompiler. The class is NOT thread safe!
+ *
+ * @author Stefan Bleibinhaus
+ *
+ */
 // TODO: Make it thread safe, use more functional style, make it less accepting of misused sbtl, testing...
 class TextCompilerSbtl() extends TextCompiler {
   private val blogUrl = Play.current.configuration.getString("blogUrl").getOrElse("http://bleibinha.us/blog")
@@ -328,7 +328,7 @@ class TextCompilerSbtl() extends TextCompiler {
         else
           h1 ++ <ul>{ h2s }</ul>
       }
-    <hr/><div class="content"><h4>Content</h4><ul>{ headersXml }</ul></div><hr/>
+    <hr/><div class="content"><h4>Contents</h4><ul>{ headersXml }</ul></div><hr/>
   }
 
   private def compileFootnote(nodes: NodeSeq): NodeSeq = {
