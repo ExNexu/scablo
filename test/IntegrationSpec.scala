@@ -1,9 +1,9 @@
 package test
 
 import org.specs2.mutable._
-
 import play.api.test._
 import play.api.test.Helpers._
+import play.api.libs.ws.WS
 
 /**
  * TODO: add your integration spec here.
@@ -12,17 +12,9 @@ import play.api.test.Helpers._
 class IntegrationSpec extends Specification {
 
   "Application" should {
-
-    "work from within a browser" in {
-      running(TestServer(3333), HTMLUNIT) { browser =>
-
-        browser.goTo("http://localhost:3333/")
-
-        browser.pageSource must contain("bleibinha.us/blog")
-
-      }
+    "run in a server" in new WithServer {
+      await(WS.url("http://localhost:" + port + "/blog").get).status must equalTo(OK)
+      await(WS.url("http://localhost:" + port + "/blog/about").get).status must equalTo(OK)
     }
-
   }
-
 }
