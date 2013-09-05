@@ -1,14 +1,12 @@
 package test
 
-import org.specs2.mutable._
-import play.api.test._
-import play.api.test.Helpers._
-import play.api.libs.ws.WS
+import org.specs2.mutable.Specification
 
-/**
- * TODO: add your integration spec here.
- * An integration test will fire up a whole play application in a real (or headless) browser
- */
+import play.api.libs.ws.WS
+import play.api.test.Helpers.OK
+import play.api.test.Helpers.await
+import play.api.test.WithServer
+
 class IntegrationSpec extends Specification {
 
   "Application" should {

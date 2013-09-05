@@ -1,15 +1,18 @@
 package test
 
-import org.specs2.mutable._
+import org.specs2.mutable.Specification
 
-import play.api.test._
-import play.api.test.Helpers._
+import play.api.test.FakeApplication
+import play.api.test.FakeRequest
+import play.api.test.Helpers.GET
+import play.api.test.Helpers.OK
+import play.api.test.Helpers.contentAsString
+import play.api.test.Helpers.contentType
+import play.api.test.Helpers.route
+import play.api.test.Helpers.running
+import play.api.test.Helpers.status
+import play.api.test.Helpers.writeableOf_AnyContentAsEmpty
 
-/**
- * TODO: Add your spec here.
- * You can mock out a whole application including requests, plugins etc.
- * For more information, consult the wiki.
- */
 class ApplicationSpec extends Specification {
 
   "Application" should {

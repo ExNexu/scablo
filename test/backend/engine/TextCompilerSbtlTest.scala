@@ -1,9 +1,9 @@
 package backend.engine
 
-import org.specs2.mutable._
+import org.specs2.mutable.Specification
 
-import play.api.test._
-import play.api.test.Helpers._
+import play.api.test.FakeApplication
+import play.api.test.Helpers.running
 
 class TextCompilerSbtlTest extends Specification {
 
