@@ -21,7 +21,7 @@ case class Post(
   override val updated: DateTime,
   override val text: String,
   override val tags: List[String],
-  override val visible: Boolean)
+  override val listed: Boolean)
     extends DBEntity with PostEssential {
 
 }

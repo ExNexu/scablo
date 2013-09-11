@@ -16,7 +16,7 @@ trait PostEssential {
   val updated: DateTime
   val text: String
   val tags: List[String]
-  val visible: Boolean
+  val listed: Boolean
 }
 
 object PostEssential {
