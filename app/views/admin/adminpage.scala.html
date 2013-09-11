@@ -1,6 +1,7 @@
 @(title: String,
   user: Option[model.blog.User],
   sidebarContainer: model.ui.SidebarContainer,
+  unlistedPosts: List[model.blog.PostEnriched],
   files: List[model.blog.FileRef]
   )(
   implicit adminLoginForm: Form[model.ui.LoginCredentials])
@@ -22,7 +23,25 @@
   
   <div class="admin-area-point">
     <h4>Posts</h4>
+    <h5>Create</h5>
     <a class="btn" href="/blog/createPost"><i class="icon-edit"></i> Create Post</a>
+    @if(!unlistedPosts.isEmpty) {
+      <h5>Unlisted</h5>
+      <table class="table table-striped">
+        <tr>
+          <th>Title</th>
+          <th>Last edit</th>
+          <th>Options</th>
+        </tr>
+        @for(post <- unlistedPosts) {
+          <tr>
+            <td><a href="/blog/@post.relUrl">@post.title</a></td>
+            <td>@post.updatedDateRelUrl</td>
+            <td><a class="btn btn-small" href="/blog/editPost@if(post.id.isDefined) {?postId=@post.id.get}"><i class="icon-edit"></i> Edit post</a></td>
+          </tr>
+        }
+        </table>
+    }
   </div>
 
   <div class="admin-area-point">

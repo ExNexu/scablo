@@ -40,6 +40,7 @@ object AdminController extends BaseController {
               title("Admin"),
               Some(user),
               SidebarContainer(),
+              postEnrichedDataService.unlisted,
               fileDataService.files))
           }
       }

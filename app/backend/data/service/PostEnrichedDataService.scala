@@ -77,6 +77,10 @@ trait PostEnrichedDataService extends PostChangeListener {
     listedEnrichedPosts.filter(_.title.toLowerCase.contains(lowercaseTerm))
   }
 
+  def unlisted(): List[PostEnriched] = {
+    enrichedPosts.filterNot(_.listed)
+  }
+
   /**
    * Searchs for the given term in the title, tags and text of the listed posts.
    *
