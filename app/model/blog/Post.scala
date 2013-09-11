@@ -20,7 +20,8 @@ case class Post(
   override val created: DateTime,
   override val updated: DateTime,
   override val text: String,
-  override val tags: List[String])
+  override val tags: List[String],
+  override val visible: Boolean)
     extends DBEntity with PostEssential {
 
 }
@@ -30,7 +31,7 @@ object Post {
 
   def apply(id: Option[String], title: String, author: User, text: String, tags: List[String]): Post = {
     val time = new DateTime()
-    new Post(id, makeRelUrl(title, time), title, author, time, time, text, tags)
+    new Post(id, makeRelUrl(title, time), title, author, time, time, text, tags, true)
   }
 
   def apply(title: String, author: User, text: String, tags: List[String]): Post =

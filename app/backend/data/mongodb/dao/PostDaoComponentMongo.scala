@@ -61,7 +61,8 @@ trait PostDaoComponentMongo extends PostDaoComponent {
         dbObject.get("created").asInstanceOf[DateTime],
         dbObject.get("updated").asInstanceOf[DateTime],
         dbObject.get("text").toString,
-        tags.toList)
+        tags.toList,
+        true)
     }
 
     override protected def insertId(post: Post, id: String): Post = post.copy(id = Some(id))
