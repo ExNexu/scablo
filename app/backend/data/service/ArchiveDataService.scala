@@ -30,7 +30,7 @@ trait ArchiveDataService extends PostChangeListener {
   protected def postDataService: PostDataService
 
   protected def updateArchive(): Unit = {
-    val posts = postDataService.allAsList.sortBy(PostEssential.postSortFun)
+    val posts = postDataService.allAsList.filter(_.listed).sortBy(PostEssential.postSortFun)
     val currentYear = new DateTime().getYear
     var newArchiveList: List[ArchiveItem] = Nil
     for (post <- posts) {
