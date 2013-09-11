@@ -53,7 +53,7 @@ object PostEnriched {
       post.updated,
       post.text,
       post.tags,
-      post.visible,
+      post.listed,
       dateRelUrlformat.print(post.created),
       dateStringformat.print(post.created),
       dateRelUrlformat.print(post.updated),

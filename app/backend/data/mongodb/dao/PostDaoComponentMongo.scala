@@ -1,23 +1,23 @@
 package backend.data.mongodb.dao
 
-import scala.Array.canBuildFrom
-import org.bson.types.ObjectId
-import org.joda.time.DateTime
-import com.mongodb.DBObject
-import com.mongodb.casbah.commons.{ MongoDBList, MongoDBObject }
-import com.mongodb.casbah.commons.conversions.scala.RegisterJodaTimeConversionHelpers
 import backend.data.dao.PostDaoComponent
 import backend.data.mongodb.service.UserDataServiceMongo
 import backend.data.service.UserDataService
-import model.blog.Post
 import com.mongodb.BasicDBList
+import com.mongodb.casbah.commons.conversions.scala.RegisterJodaTimeConversionHelpers
+import com.mongodb.casbah.commons.{ MongoDBList, MongoDBObject }
+import com.mongodb.DBObject
+import model.blog.Post
+import org.bson.types.ObjectId
+import org.joda.time.DateTime
+import scala.Array.canBuildFrom
 
 /**
-  * A trait implementing the PostDaoComponent for MongoDB
-  *
-  * @author Stefan Bleibinhaus
-  *
-  */
+ * A trait implementing the PostDaoComponent for MongoDB
+ *
+ * @author Stefan Bleibinhaus
+ *
+ */
 trait PostDaoComponentMongo extends PostDaoComponent {
   override val dao = PostDaoMongo
 
@@ -30,7 +30,7 @@ trait PostDaoComponentMongo extends PostDaoComponent {
     override protected def writeConverter(post: Post): DBObject = {
       val objBuilder = MongoDBObject.newBuilder
       post.id foreach {
-        id => objBuilder += ("_id" -> new ObjectId(id))
+        id ⇒ objBuilder += ("_id" -> new ObjectId(id))
       }
       objBuilder += ("relUrl" -> post.relUrl)
       objBuilder += ("title" -> post.title)
@@ -39,9 +39,10 @@ trait PostDaoComponentMongo extends PostDaoComponent {
       objBuilder += ("updated" -> post.updated)
       objBuilder += ("text" -> post.text)
       val tagsBuilder = MongoDBList.newBuilder
-      for (tag <- post.tags)
+      for (tag ← post.tags)
         tagsBuilder += tag
       objBuilder += ("tags" -> tagsBuilder.result)
+      objBuilder += ("listed" → post.listed)
       objBuilder.result
     }
 
@@ -52,8 +53,13 @@ trait PostDaoComponentMongo extends PostDaoComponent {
         else
           dbObject.get("tags").asInstanceOf[MongoDBList].toArray
       val tags =
-        for (tagObj <- tagObjs)
+        for (tagObj ← tagObjs)
           yield tagObj.toString()
+      val listed =
+        dbObject.containsField("listed") match {
+          case true  ⇒ dbObject.get("listed").asInstanceOf[Boolean]
+          case false ⇒ true
+        }
       new Post(Some(dbObject.get("_id").toString),
         dbObject.get("relUrl").toString,
         dbObject.get("title").toString,
@@ -62,7 +68,7 @@ trait PostDaoComponentMongo extends PostDaoComponent {
         dbObject.get("updated").asInstanceOf[DateTime],
         dbObject.get("text").toString,
         tags.toList,
-        true)
+        listed)
     }
 
     override protected def insertId(post: Post, id: String): Post = post.copy(id = Some(id))
