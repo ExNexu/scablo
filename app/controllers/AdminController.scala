@@ -3,37 +3,38 @@ package controllers
 import backend.engine.TextCompileException
 import model.blog.{ PostEnriched, StaticPage, User }
 import model.ui.{ BreadcrumbItem, MetaTags, PostDraft, SidebarContainer }
+import play.api.data.Forms.{ mapping, nonEmptyText, text, boolean }
 import play.api.data.{ Form, FormError }
-import play.api.data.Forms.{ mapping, nonEmptyText, text }
 import play.api.mvc.{ Action, SimpleResult }
 
 /**
-  * The admin controller contains all admin actions.
-  * The order of the methods is the same as in the routes file.
-  *
-  * @author Stefan Bleibinhaus
-  *
-  */
+ * The admin controller contains all admin actions.
+ * The order of the methods is the same as in the routes file.
+ *
+ * @author Stefan Bleibinhaus
+ *
+ */
 object AdminController extends BaseController {
   private val draftForm = Form(
     mapping(
       "id" -> text,
       "Title" -> nonEmptyText,
       "Text" -> text,
-      "Tags" -> text)(PostDraft.apply)(PostDraft.unapplyToStrings))
+      "Tags" -> text,
+      "Listed" → boolean)(PostDraft.apply)(PostDraft.unapplyToStrings))
   private val updateAboutForm = Form("aboutText" -> text)
   private var savedDraft: Option[PostDraft] = None
   private val adminBcItem = BreadcrumbItem("Admin", "/blog/admin", "icon-globe")
 
   /**
-    * Shows the admin page
-    *
-    * @return
-    */
+   * Shows the admin page
+   *
+   * @return
+   */
   def admin = Action {
-    implicit request =>
+    implicit request ⇒
       withUser {
-        user =>
+        user ⇒
           {
             Ok(views.html.admin.adminpage(
               title("Admin"),
@@ -45,14 +46,14 @@ object AdminController extends BaseController {
   }
 
   /**
-    * Shows the create a new post page
-    *
-    * @return
-    */
+   * Shows the create a new post page
+   *
+   * @return
+   */
   def createPost = Action {
-    implicit request =>
+    implicit request ⇒
       withUser {
-        user =>
+        user ⇒
           {
             val breadcrumb = List(
               adminBcItem,
@@ -68,21 +69,21 @@ object AdminController extends BaseController {
   }
 
   /**
-    * Shows the edit post page. If there is a postId given, it tries to edit that post,
-    * if not, it tries to edit the most recent draft.
-    *
-    * @param postId
-    * @return
-    */
+   * Shows the edit post page. If there is a postId given, it tries to edit that post,
+   * if not, it tries to edit the most recent draft.
+   *
+   * @param postId
+   * @return
+   */
   def editPost(postId: Option[String]) = Action {
-    implicit request =>
+    implicit request ⇒
       withUser {
-        user =>
+        user ⇒
           postId match {
             // if there is a postId, we are editing an existing post
-            case Some(postId) =>
+            case Some(postId) ⇒
               postDataService.get(postId) match {
-                case Some(post) => {
+                case Some(post) ⇒ {
                   // Are we editing the draft of an existing post?
                   if (savedDraft.isDefined && savedDraft.get.id.isDefined && savedDraft.get.id.get == postId) {
                     val breadcrumb = List(
@@ -110,13 +111,13 @@ object AdminController extends BaseController {
                       postDraftForm))
                   }
                 }
-                case None => redirectToRoot
+                case None ⇒ redirectToRoot
               }
             // no postId => new post
-            case None =>
+            case None ⇒
               savedDraft match {
                 // new post: existing draft
-                case Some(draft) => {
+                case Some(draft) ⇒ {
                   val breadcrumb = List(
                     adminBcItem,
                     BreadcrumbItem("Edit Post", "/blog/editPost", "icon-edit"),
@@ -129,7 +130,7 @@ object AdminController extends BaseController {
                     draftForm.fill(draft)))
                 }
                 // new post: new draft
-                case None =>
+                case None ⇒
                   Redirect(routes.AdminController.createPost)
               }
           }
@@ -137,59 +138,59 @@ object AdminController extends BaseController {
   }
 
   /**
-    * Deletes the corresponding post of the given id
-    *
-    * @param postId
-    * @return
-    */
+   * Deletes the corresponding post of the given id
+   *
+   * @param postId
+   * @return
+   */
   def deletePost(postId: String) = Action {
-    implicit request =>
+    implicit request ⇒
       withUser {
-        user =>
+        user ⇒
           postDataService.delete(postId)
           redirectToRoot
       }
   }
 
   /**
-    * Discards the most recent draft
-    *
-    * @return
-    */
+   * Discards the most recent draft
+   *
+   * @return
+   */
   def discardDraft() = Action {
-    implicit request =>
+    implicit request ⇒
       withUser {
-        user =>
+        user ⇒
           val draftId = savedDraft match {
-            case Some(draft) => draft.id match {
-              case Some(id) => Some(id)
-              case None => None
+            case Some(draft) ⇒ draft.id match {
+              case Some(id) ⇒ Some(id)
+              case None     ⇒ None
             }
-            case None => None
+            case None ⇒ None
           }
           savedDraft = None
           draftId match {
-            case Some(id) => Redirect("/blog/" + postDataService.get(id).get.relUrl)
-            case None => redirectToRoot
+            case Some(id) ⇒ Redirect("/blog/" + postDataService.get(id).get.relUrl)
+            case None     ⇒ redirectToRoot
           }
       }
   }
 
   /**
-    * Handles the submit of the post edit form.
-    * Results in either a bad request if the form is not valid or
-    * shows the edit as draft.
-    *
-    * @return
-    */
+   * Handles the submit of the post edit form.
+   * Results in either a bad request if the form is not valid or
+   * shows the edit as draft.
+   *
+   * @return
+   */
   def editPostFormSubmit = Action {
-    implicit request =>
+    implicit request ⇒
       withUser {
-        user =>
+        user ⇒
           val mappedForm = draftForm.bindFromRequest()
           mappedForm.fold(
             // form has errors
-            formWithErrors => {
+            formWithErrors ⇒ {
               val breadcrumb = List(
                 adminBcItem,
                 BreadcrumbItem("Edit Post", None, Some("icon-edit")))
@@ -200,7 +201,7 @@ object AdminController extends BaseController {
                 SidebarContainer(),
                 formWithErrors))
               // form is fine, show draft
-            }, draft => {
+            }, draft ⇒ {
               savedDraft = Some(draft)
               Redirect(routes.AdminController.showDraft)
             })
@@ -208,79 +209,79 @@ object AdminController extends BaseController {
   }
 
   /**
-    * Displays the current draft
-    *
-    * @return
-    */
+   * Displays the current draft
+   *
+   * @return
+   */
   def showDraft = Action {
-    implicit request =>
+    implicit request ⇒
       withUser {
-        user =>
+        user ⇒
           savedDraft match {
             // we have some draft
-            case Some(draft) =>
+            case Some(draft) ⇒
               draft.id match {
                 // we have a draft of an existing post
-                case Some(id) => postDataService.get(id) match {
-                  case Some(origPost) =>
+                case Some(id) ⇒ postDataService.get(id) match {
+                  case Some(origPost) ⇒
                     showDraftTry(user, draft, origPost, PostDraft.createPostEnrichedPostFun)
-                  case None => redirectToRoot
+                  case None ⇒ redirectToRoot
                 }
                 // we have a draft of a new post
-                case None =>
+                case None ⇒
                   showDraftTry(user, draft, user, PostDraft.createPostEnrichedUserFun)
               }
             // we have no draft at all
-            case None => redirectToRoot
+            case None ⇒ redirectToRoot
           }
       }
   }
 
   /**
-    * Publishes the recent draft.
-    * Either updates an existing post or publishes a new post depending on the postId of the current draft.
-    *
-    * @return
-    */
+   * Publishes the recent draft.
+   * Either updates an existing post or publishes a new post depending on the postId of the current draft.
+   *
+   * @return
+   */
   def publishDraft = Action {
-    implicit request =>
+    implicit request ⇒
       withUser {
-        user =>
+        user ⇒
           savedDraft match {
-            case Some(draft) =>
+            case Some(draft) ⇒
               draft.id match {
-                case Some(id) => postDataService.get(id) match {
-                  case Some(origPost) => {
+                case Some(id) ⇒ postDataService.get(id) match {
+                  case Some(origPost) ⇒ {
                     val post = postDataService.update(PostDraft.createPost(draft, origPost))
                     Redirect("/blog/" + post.relUrl)
                   }
-                  case None => redirectToRoot
+                  case None ⇒ redirectToRoot
                 }
-                case None => {
+                case None ⇒ {
                   val post = postDataService.save(PostDraft.createPost(draft, user))
                   Redirect("/blog/" + post.relUrl)
                 }
               }
-            case None =>
+            case None ⇒
               redirectToRoot
           }
       }
   }
 
   /**
-    * Handles an update of the about page
-    *
-    * @return
-    */
+   * Handles an update of the about page
+   *
+   * @return
+   */
   def updateAboutSubmit = Action {
-    implicit request =>
+    implicit request ⇒
       withUser {
-        user =>
+        user ⇒
           {
             updateAboutForm.bindFromRequest().fold(
-              formWithErrors => {
+              formWithErrors ⇒ {
                 redirectToAbout
-              }, text => {
+              }, text ⇒ {
                 val aboutPage = staticPageDataService.getByName("about").getOrElse(StaticPage("about"))
                 staticPageDataService.saveOrUpdate(aboutPage.copy(text = text))
                 redirectToAbout
@@ -290,17 +291,17 @@ object AdminController extends BaseController {
   }
 
   /**
-    * Handles the file upload
-    *
-    * @return
-    */
+   * Handles the file upload
+   *
+   * @return
+   */
   def uploadFile = Action(parse.multipartFormData) {
-    implicit request =>
+    implicit request ⇒
       withUser {
-        user =>
+        user ⇒
           {
             request.body.file("file").map {
-              file =>
+              file ⇒
                 val name = file.filename
                 fileDataService.save(name, file.ref)
                 redirectToAdmin
@@ -312,15 +313,15 @@ object AdminController extends BaseController {
   }
 
   /**
-    * Deletes the file of the given name
-    *
-    * @param name
-    * @return
-    */
+   * Deletes the file of the given name
+   *
+   * @param name
+   * @return
+   */
   def deleteFile(name: String) = Action {
-    implicit request =>
+    implicit request ⇒
       withUser {
-        user =>
+        user ⇒
           {
             fileDataService.remove(name)
             redirectToAdmin
@@ -332,7 +333,7 @@ object AdminController extends BaseController {
     user: User,
     draft: PostDraft,
     createEle: A,
-    createFun: (PostDraft, A) => PostEnriched): SimpleResult[_] = {
+    createFun: (PostDraft, A) ⇒ PostEnriched): SimpleResult[_] = {
     try {
       val enrichedPost = createFun(draft, createEle)
       val monthString = monthToString(enrichedPost.created.getMonthOfYear())
@@ -350,7 +351,7 @@ object AdminController extends BaseController {
         Some(enrichedPost),
         true))
     } catch {
-      case ex: TextCompileException => {
+      case ex: TextCompileException ⇒ {
         val breadcrumb = List(
           adminBcItem,
           BreadcrumbItem("Edit Post"))

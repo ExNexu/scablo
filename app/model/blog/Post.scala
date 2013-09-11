@@ -29,13 +29,18 @@ case class Post(
 object Post {
   private val relUrlDateFormat = DateTimeFormat.forPattern("yyyy/MM")
 
-  def apply(id: Option[String], title: String, author: User, text: String, tags: List[String]): Post = {
+  def apply(id: Option[String],
+    title: String,
+    author: User,
+    text: String,
+    tags: List[String],
+    listed: Boolean): Post = {
     val time = new DateTime()
-    new Post(id, makeRelUrl(title, time), title, author, time, time, text, tags, true)
+    new Post(id, makeRelUrl(title, time), title, author, time, time, text, tags, listed)
   }
 
-  def apply(title: String, author: User, text: String, tags: List[String]): Post =
-    Post(None, title, author, text, tags)
+  def apply(title: String, author: User, text: String, tags: List[String], listed: Boolean): Post =
+    Post(None, title, author, text, tags, listed)
 
   // method inspired by julienrf's tyco found at https://github.com/julienrf/tyco
   private def makeRelUrl(title: String, date: DateTime): String = {

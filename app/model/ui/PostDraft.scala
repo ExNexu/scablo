@@ -15,7 +15,8 @@ case class PostDraft(
   val id: Option[String],
   val title: String,
   val text: String,
-  val tags: List[String])
+  val tags: List[String],
+  val listed: Boolean)
 
 object PostDraft {
   // Do NOT format the XML!
@@ -28,9 +29,9 @@ object PostDraft {
     <h1>header</h1>
     <p>text</p>
   </text>
-</sbtl>).toString, "")
+</sbtl>).toString, "", true)
 
-  def apply(id: String, title: String, text: String, tags: String): PostDraft = {
+  def apply(id: String, title: String, text: String, tags: String, listed: Boolean): PostDraft = {
     val idOption = id match {
       case id if id.length > 1 => Some(id)
       case _ => None
@@ -40,11 +41,12 @@ object PostDraft {
      * and sorts them by their name
      */
     new PostDraft(idOption, title, text,
-      tags.split(',').map(_.trim).filter(_.length > 1).map(_.replaceAll("\\s", "-")).sortBy(_.toString).toList)
+      tags.split(',').map(_.trim).filter(_.length > 1).map(_.replaceAll("\\s", "-")).sortBy(_.toString).toList,
+      listed)
   }
 
-  def unapplyToStrings(draft: PostDraft): Option[(String, String, String, String)] =
-    Some((draft.id.getOrElse(""), draft.title, draft.text, draft.tags.mkString("", ", ", "")))
+  def unapplyToStrings(draft: PostDraft): Option[(String, String, String, String, Boolean)] =
+    Some((draft.id.getOrElse(""), draft.title, draft.text, draft.tags.mkString("", ", ", ""), draft.listed))
 
   /**
     * Creates a draft from a post
@@ -53,7 +55,7 @@ object PostDraft {
     * @return
     */
   def createDraft(post: Post): PostDraft =
-    PostDraft(post.id, post.title, post.text, post.tags)
+    PostDraft(post.id, post.title, post.text, post.tags, post.listed)
 
   /**
     * Creates a new post from a draft
@@ -63,7 +65,7 @@ object PostDraft {
     * @return
     */
   def createPost(draft: PostDraft, user: User): Post =
-    Post(draft.id, draft.title, user, draft.text, draft.tags)
+    Post(draft.id, draft.title, user, draft.text, draft.tags, draft.listed)
 
   /**
     * Creates a post from a draft and an existing post
@@ -73,7 +75,11 @@ object PostDraft {
     * @return
     */
   def createPost(draft: PostDraft, origPost: Post): Post =
-    origPost.copy(title = draft.title, updated = new DateTime(), text = draft.text, tags = draft.tags)
+    origPost.copy(title = draft.title,
+      updated = new DateTime(),
+      text = draft.text,
+      tags = draft.tags,
+      listed = draft.listed)
 
   /**
     * @return A function creating an enriched post from a draft
