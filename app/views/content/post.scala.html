@@ -48,7 +48,7 @@
           }
         </div>
       }
-      @if(post.id.isDefined && !draftMode) {
+      @if(post.id.isDefined && !draftMode && post.listed) {
         <div class="well">
           @branding.postComments(post.id.get, post.title)
         </div>
