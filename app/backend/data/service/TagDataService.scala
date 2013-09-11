@@ -58,8 +58,8 @@ trait TagDataService extends PostChangeListener {
     /*
      * tagsList and keywordsString
      */
-    val allPosts = postDataService.allAsList
-    val allTags = allPosts.flatMap(_.tags)
+    val allListedPosts = postDataService.allAsList.filter(_.listed)
+    val allTags = allListedPosts.flatMap(_.tags)
     tagsList = allTags.distinct.map(key => Tag(key, allTags.count(_ == key))).sortBy(tag => tag.name)
     keywordsString = tagsList.sortBy(-_.count).map(_.name).mkString(",")
     /*
