@@ -21,7 +21,8 @@ object AdminController extends BaseController {
       "Title" -> nonEmptyText,
       "Text" -> text,
       "Tags" -> text,
-      "Listed" → boolean)(PostDraft.apply)(PostDraft.unapplyToStrings))
+      "Listed" → boolean,
+      "Reset time" → boolean)(PostDraft.apply)(PostDraft.unapplyToStrings))
   private val updateAboutForm = Form("aboutText" -> text)
   private var savedDraft: Option[PostDraft] = None
   private val adminBcItem = BreadcrumbItem("Admin", "/blog/admin", "icon-globe")
@@ -254,12 +255,14 @@ object AdminController extends BaseController {
                 case Some(id) ⇒ postDataService.get(id) match {
                   case Some(origPost) ⇒ {
                     val post = postDataService.update(PostDraft.createPost(draft, origPost))
+                    savedDraft = None
                     Redirect("/blog/" + post.relUrl)
                   }
                   case None ⇒ redirectToRoot
                 }
                 case None ⇒ {
                   val post = postDataService.save(PostDraft.createPost(draft, user))
+                  savedDraft = None
                   Redirect("/blog/" + post.relUrl)
                 }
               }
