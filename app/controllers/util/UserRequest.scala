@@ -29,11 +29,11 @@ trait UserRequest extends Controller with BlogRoutes {
     */
   protected def tryLogin(
     credentials: LoginCredentials)(
-      implicit session: Session): Either[String, (User, SimpleResult[_] => Result)] =
+      implicit session: Session): Either[String, (User, SimpleResult => Result)] =
     userDataService.login(credentials.name, credentials.password) match {
       case Some(user) =>
         Right((user,
-          (result: SimpleResult[_]) =>
+          (result: SimpleResult) =>
             result.withSession(session + (USERID_SESSION_IDENTIFIER -> user.id.get))))
       case None => Left("Wrong password")
     }
@@ -43,7 +43,7 @@ trait UserRequest extends Controller with BlogRoutes {
     * @param simpleResult Optional, defaults to redirectToRoot
     * @return The Result
     */
-  protected def doLogout(simpleResult: SimpleResult[_] = redirectToRoot): Result =
+  protected def doLogout(simpleResult: SimpleResult = redirectToRoot): Result =
     simpleResult.withNewSession
 
   /**

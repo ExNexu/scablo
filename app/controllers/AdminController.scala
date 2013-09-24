@@ -337,7 +337,7 @@ object AdminController extends BaseController {
     user: User,
     draft: PostDraft,
     createEle: A,
-    createFun: (PostDraft, A) ⇒ PostEnriched): SimpleResult[_] = {
+    createFun: (PostDraft, A) ⇒ PostEnriched): SimpleResult = {
     try {
       val enrichedPost = createFun(draft, createEle)
       val monthString = monthToString(enrichedPost.created.getMonthOfYear())

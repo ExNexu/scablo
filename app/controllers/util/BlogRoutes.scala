@@ -13,7 +13,7 @@ import play.api.Play
   */
 // TODO: Use play's reverse routing
 trait BlogRoutes extends Controller {
-  protected val redirectToRoot: SimpleResult[_] = Redirect("/blog")
-  protected val redirectToAbout: SimpleResult[_] = Redirect("/blog/about")
-  protected val redirectToAdmin: SimpleResult[_] = Redirect("/blog/admin")
+  protected val redirectToRoot: SimpleResult = Redirect("/blog")
+  protected val redirectToAbout: SimpleResult = Redirect("/blog/about")
+  protected val redirectToAdmin: SimpleResult = Redirect("/blog/admin")
 }
