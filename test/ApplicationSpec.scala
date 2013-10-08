@@ -1,7 +1,12 @@
 package test
 
+import java.util.concurrent.TimeUnit
+
+import scala.concurrent.duration.FiniteDuration
+
 import org.specs2.mutable.Specification
 
+import akka.util.Timeout
 import play.api.test.FakeApplication
 import play.api.test.FakeRequest
 import play.api.test.Helpers.GET
@@ -14,6 +19,7 @@ import play.api.test.Helpers.status
 import play.api.test.Helpers.writeableOf_AnyContentAsEmpty
 
 class ApplicationSpec extends Specification {
+  implicit val timeout = Timeout(FiniteDuration(3, TimeUnit.SECONDS))
 
   "Application" should {
 
