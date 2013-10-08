@@ -27,6 +27,7 @@ CodeMirror.xmlHints['<sbtl><text><'] =
   'h2'
   'gist'
   'img'
+  'blockquote'
 ]
 
 CodeMirror.xmlHints['<sbtl><text><p><'] =
@@ -62,6 +63,7 @@ CodeMirror.xmlHints['<sbtl><text><h2 '] =
 ]
 
 CodeMirror.xmlHints['<sbtl><abstract><ref '] =
+CodeMirror.xmlHints['<sbtl><text><blockquote '] =
 CodeMirror.xmlHints['<sbtl><text><p><ref '] =
 CodeMirror.xmlHints['<sbtl><abstract><footnote><ref '] =
 CodeMirror.xmlHints['<sbtl><text><p><footnote><ref '] =

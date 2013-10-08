@@ -92,6 +92,7 @@ class TextCompilerSbtl() extends TextCompiler {
           case h @ <h1>{ titleNode }</h1> => compileHeader(h, titleNode, 1)
           case h @ <h2>{ titleNode }</h2> => compileHeader(h, titleNode, 2)
           case ref @ <ref>{ contents @ _* }</ref> => compileRef(ref, contents)
+          case blockquote @ <blockquote>{ contents @ _* }</blockquote> => compileBlockquote(blockquote, contents)
           case intref @ <intref>{ contents @ _* }</intref> => intref
           case <footnote>{ contents @ _* }</footnote> => compileFootnote(contents)
           case gist @ <gist>{ contents @ _* }</gist> => compileGistCode(gist, contents)
@@ -178,10 +179,10 @@ class TextCompilerSbtl() extends TextCompiler {
     </div>
   }
 
-  private def compileRef(refNode: Node, refContent: NodeSeq): NodeSeq = {
-    val link = getAttribute(refNode, "link")
-    val author = getAttribute(refNode, "author")
-    val title = getAttribute(refNode, "title")
+  private def refInstance(refLikeNode: Node): Ref = {
+    val link = getAttribute(refLikeNode, "link")
+    val author = getAttribute(refLikeNode, "author")
+    val title = getAttribute(refLikeNode, "title")
     val origin = refs.find(ref => ref.link == link && ref.author == author && ref.title == title)
     val number = origin match {
       case Some(tag) => tag.number
@@ -192,21 +193,42 @@ class TextCompilerSbtl() extends TextCompiler {
         nr
       }
     }
-    val contents = compile(refContent)
     if (link.isEmpty && (title.isEmpty || author.isEmpty))
-      throw new TextCompileException("Ref node " + refNode + " has no link or no author and title!")
-    val titleText = getTitleTextForRef(link, author, title)
-    link match {
+      throw new TextCompileException("Reflike node " + refLikeNode + " has no link or no author and title!")
+    Ref(number, link, author, title)
+  }
+
+  private def compileRefInstance(ref: Ref, compiledRefLikeContent: NodeSeq): NodeSeq = {
+    val titleText = getTitleTextForRef(ref)
+    ref.link match {
       case Some(link) if !link.contains(externEvidence) =>
-        <a href={ baseBlogUrl + link } title={ titleText } target="_blank">{ contents } { "[" + number + "]" }</a>
+        <a href={ baseBlogUrl + link } title={ titleText } target="_blank">{ compiledRefLikeContent } { "[" + ref.number + "]" }</a>
       case Some(link) =>
         <a href={ link } title={ titleText } target="_blank">
-          { contents }
-          { "[" + number + "]" } <i class="icon-external-link"></i>
+          { compiledRefLikeContent }{ "[" + ref.number + "]" }<i class="icon-external-link"></i>
         </a>
       case _ =>
-        <a href={ "#ref-" + number } title={ titleText }>{ contents } { "[" + number + "]" }</a>
+        <a href={ "#ref-" + ref.number } title={ titleText }>{ compiledRefLikeContent } { "[" + ref.number + "]" }</a>
     }
+  }
+
+  private def compileRef(refNode: Node, refContent: NodeSeq): NodeSeq = {
+    val ref = refInstance(refNode)
+    val contents = compile(refContent)
+    compileRefInstance(ref, contents)
+  }
+
+  private def compileBlockquote(blockquote: Node, blockquoteContent: NodeSeq): NodeSeq = {
+    val ref = refInstance(blockquote)
+    val contents = compile(blockquoteContent)
+    val titleText = getTitleTextForRef(ref)
+    if (titleText.exists(_.toString.exists(_ == '<')))
+      throw new TextCompileException("Blockquote " + blockquote + " has a '<' in its titleText (" + titleText + ")!")
+    val refNodeSeq = compileRefInstance(ref, NodeSeq.Empty)
+    <blockquote>
+      <p> { contents } </p>
+      <small> { titleText } { refNodeSeq }</small>
+    </blockquote>
   }
 
   private def getTitleTextForRef(link: Option[String], author: Option[String], title: Option[String]): String = {
@@ -244,17 +266,17 @@ class TextCompilerSbtl() extends TextCompiler {
             <li class="ref">
               { "[" + number + "] " }
               <a href={ link } title={ titleText } target="_blank">
-                { titleText } <i class="icon-external-link"></i>
+                { titleText }<i class="icon-external-link"></i>
               </a>
             </li>
           case _ =>
             <li class="ref">
-              <a name={ "ref-" + ref.number }></a>{ "[" + ref.number + "] " } { titleText }
+              <a name={ "ref-" + ref.number }></a>{ "[" + ref.number + "] " }{ titleText }
             </li>
         }
       }
     <div class="references">
-      { compile(<h1>{ "References" }</h1>) } <ul>{ refsXml }</ul>
+      { compile(<h1>{ "References" }</h1>) }<ul>{ refsXml }</ul>
     </div>
   }
 
@@ -310,18 +332,22 @@ class TextCompilerSbtl() extends TextCompiler {
           case Some(name) => Attribute(None, "href", Text("#" + name), Null)
           case None => Attribute(None, "href", Text("#header-" + headers1.head.numeration), Null)
         }
-        val h1 = <li class="h1">{ <a class="l1header">
+        val h1 = <li class="h1">{
+          <a class="l1header">
             { headers1.head.numeration + " " + headers1.head.title }
-          </a>% h1Href }</li>
+          </a> % h1Href
+        }</li>
         val h2s =
           for (subheader <- headers1.tail) yield {
             val h2Href = subheader.name match {
               case Some(name) => Attribute(None, "href", Text("#" + name), Null)
               case None => Attribute(None, "href", Text("#header-" + subheader.numeration), Null)
             }
-            <li class="h2">{ <a class="l2header">
+            <li class="h2">{
+              <a class="l2header">
                 { subheader.numeration + " " + subheader.title }
-              </a>% h2Href }</li>
+              </a> % h2Href
+            }</li>
           }
         if (h2s.isEmpty)
           h1
@@ -356,7 +382,7 @@ class TextCompilerSbtl() extends TextCompiler {
       for (footnote <- footnotes.sortBy(_.number))
         yield <p class="footnote">
                 <a name={ "footnote-" + footnote.number }></a>
-                <sup>{ footnote.number }</sup>{ " " } { footnote.content }
+                <sup>{ footnote.number }</sup>{ " " }{ footnote.content }
               </p>;
     <hr/><div class="footnotes">{ footnotesXml }</div><hr/>
   }
@@ -390,8 +416,8 @@ class TextCompilerSbtl() extends TextCompiler {
             <a href={ baseBlogUrl + link } title={ titleText } target="_blank">{ contents }</a>
           else
             <a href={ link } title={ titleText } target="_blank">
-             { contents }
-             <i class="icon-external-link"></i>
+              { contents }
+              <i class="icon-external-link"></i>
             </a>
         }
       case None => compilePreviewAbstract(refContent)
