@@ -32,11 +32,19 @@ class TextCompilerSbtl() extends TextCompiler {
   override def compile(text: String): (String, String) =
     try {
       val textXml = XML.loadString(text)
-      (compilePreviewAbstract(textXml).toString, compilePost(textXml))
+      val compiledAbstract = formatXmlString(compilePreviewAbstract(textXml).toString)
+      val compiledText = formatXmlString(compilePost(textXml))
+      (compiledAbstract, compiledText)
     } catch {
       case e: TextCompileException => throw e
       case e: Exception => throw new TextCompileException(e.getMessage())
     }
+
+  private def formatXmlString(string: String): String =
+    string.
+      replaceAll("\n", "").
+      replaceAll("\\s+", " ").
+      trim
 
   private def compilePost(textXml: Elem): String = {
     val textAbstractCompiled1 = compileTextAbstract(textXml \ "abstract")
@@ -202,13 +210,13 @@ class TextCompilerSbtl() extends TextCompiler {
     val titleText = getTitleTextForRef(ref)
     ref.link match {
       case Some(link) if !link.contains(externEvidence) =>
-        <a href={ baseBlogUrl + link } title={ titleText } target="_blank">{ compiledRefLikeContent } { "[" + ref.number + "]" }</a>
+        <a href={ baseBlogUrl + link } title={ titleText } target="_blank">{ compiledRefLikeContent } { " [" + ref.number + "]" }</a>
       case Some(link) =>
         <a href={ link } title={ titleText } target="_blank">
-          { compiledRefLikeContent }{ "[" + ref.number + "]" }<i class="icon-external-link"></i>
+          { compiledRefLikeContent }{ " [" + ref.number + "] " }<i class="icon-external-link"></i>
         </a>
       case _ =>
-        <a href={ "#ref-" + ref.number } title={ titleText }>{ compiledRefLikeContent } { "[" + ref.number + "]" }</a>
+        <a href={ "#ref-" + ref.number } title={ titleText }>{ compiledRefLikeContent } { " [" + ref.number + "]" }</a>
     }
   }
 
