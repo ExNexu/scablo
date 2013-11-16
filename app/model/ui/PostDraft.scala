@@ -23,14 +23,14 @@ object PostDraft {
   // Do NOT format the XML!
   val templateDraft = PostDraft("", "",
     (<sbtl>
-       <abstract>
-         abstract
-       </abstract>
-       <text>
-         <h1>header</h1>
-         <p>text</p>
-       </text>
-     </sbtl>).toString, "", true, false)
+  <abstract>
+    abstract
+  </abstract>
+  <text>
+    <h1>header</h1>
+    <p>text</p>
+  </text>
+</sbtl>).toString, "", true, false)
 
   def apply(id: String, title: String, text: String, tags: String, listed: Boolean, resetTime: Boolean): PostDraft = {
     val idOption = id match {
