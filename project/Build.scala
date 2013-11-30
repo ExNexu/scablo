@@ -12,7 +12,8 @@ object ApplicationBuild extends Build {
     cache,
     "org.mongodb" %% "casbah" % "2.6.3",
     "com.github.nscala-time" %% "nscala-time" % "0.4.0",
-    "org.mindrot" % "jbcrypt" % "0.3m"
+    "org.mindrot" % "jbcrypt" % "0.3m",
+    "org.mockito" % "mockito-all" % "1.9.5"
   )
 
   val main = play.Project(appName, appVersion, appDependencies).settings(
