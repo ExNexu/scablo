@@ -1,7 +1,7 @@
 @(allTags: List[model.blog.Tag], bigTagMinCount: Int, middleTagMinCount: Int, activeTag: Option[String])
 
 <div class="well">
-  <h4><i class="icon-tags"></i> Tagcloud</h4>
+  <h4><i class="icon-tags"></i> Tags</h4>
   <div class="tagcloud">
     @for(tag <- allTags) {
         @if(activeTag.isDefined) {
