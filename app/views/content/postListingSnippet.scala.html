@@ -19,7 +19,7 @@
         <p class="post-tags">
         <small><i class="icon-tags"></i>  <strong>Tags: </strong></small>
         @for(tag <- post.tags) {
-          <a href="/blog/tag/@tag"><span class="tag"> @tag </span></a>
+          <a href="/blog/tag/@tag" title="Tag: @tag"><span class="tag"> @tag </span></a>
         }
         </p>
       }

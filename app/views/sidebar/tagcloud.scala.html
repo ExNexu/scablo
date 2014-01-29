@@ -10,26 +10,26 @@
               @if(activeTag.get == tag.name) {
                 <a href="/blog"><span class="tag tag-big tag-active">@tag.name</span></a>
               } else {
-                <a href="/blog/tag/@tag.name"><span class="tag tag-big">@tag.name</span></a>
+                <a href="/blog/tag/@tag.name" title="Tag: @tag.name"><span class="tag tag-big">@tag.name</span></a>
               }
             }
             case n if n >= middleTagMinCount => {
               @if(activeTag.get == tag.name) {
                 <a href="/blog"><span class="tag tag-middle tag-active">@tag.name</span></a>
               } else {
-                <a href="/blog/tag/@tag.name"><span class="tag tag-middle">@tag.name</span></a>
+                <a href="/blog/tag/@tag.name" title="Tag: @tag.name"><span class="tag tag-middle">@tag.name</span></a>
               }
             }
             case _ => {
               @if(activeTag.get == tag.name) {
                 <a href="/blog"><span class="tag tag-small tag-active">@tag.name</span></a>
               } else {
-                <a href="/blog/tag/@tag.name"><span class="tag tag-small">@tag.name</span></a>
+                <a href="/blog/tag/@tag.name" title="Tag: @tag.name"><span class="tag tag-small">@tag.name</span></a>
               }
             }
           }
         } else {
-          <a href="/blog/tag/@tag.name">
+          <a href="/blog/tag/@tag.name" title="Tag: @tag.name">
             @tag.count match {
               case n if n >= bigTagMinCount => {
                 <span class="tag tag-big">@tag.name</span>
