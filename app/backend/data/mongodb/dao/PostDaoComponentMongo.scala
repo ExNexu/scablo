@@ -43,6 +43,7 @@ trait PostDaoComponentMongo extends PostDaoComponent {
         tagsBuilder += tag
       objBuilder += ("tags" -> tagsBuilder.result)
       objBuilder += ("listed" → post.listed)
+      objBuilder += ("showUpdated" → post.showUpdated)
       objBuilder.result
     }
 
@@ -60,6 +61,11 @@ trait PostDaoComponentMongo extends PostDaoComponent {
           case true  ⇒ dbObject.get("listed").asInstanceOf[Boolean]
           case false ⇒ true
         }
+      val showUpdated =
+        dbObject.containsField("showUpdated") match {
+          case true  ⇒ dbObject.get("showUpdated").asInstanceOf[Boolean]
+          case false ⇒ true
+        }
       new Post(Some(dbObject.get("_id").toString),
         dbObject.get("relUrl").toString,
         dbObject.get("title").toString,
@@ -68,7 +74,8 @@ trait PostDaoComponentMongo extends PostDaoComponent {
         dbObject.get("updated").asInstanceOf[DateTime],
         dbObject.get("text").toString,
         tags.toList,
-        listed)
+        listed,
+        showUpdated)
     }
 
     override protected def insertId(post: Post, id: String): Post = post.copy(id = Some(id))

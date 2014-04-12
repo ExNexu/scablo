@@ -21,7 +21,8 @@ object AdminController extends BaseController {
       "Title" -> nonEmptyText,
       "Text" -> text,
       "Tags" -> text,
-      "Listed" → boolean,
+      "Listed on blog" → boolean,
+      "Show edit information" → boolean,
       "Reset time" → boolean)(PostDraft.apply)(PostDraft.unapplyToStrings))
   private val updateAboutForm = Form("aboutText" -> text)
   private var savedDraft: Option[PostDraft] = None

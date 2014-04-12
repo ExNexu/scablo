@@ -17,6 +17,7 @@ case class PostDraft(
   val text: String,
   val tags: List[String],
   val listed: Boolean,
+  val showEdit: Boolean,
   val resetTime: Boolean)
 
 object PostDraft {
@@ -30,12 +31,19 @@ object PostDraft {
     <h1>header</h1>
     <p>text</p>
   </text>
-</sbtl>).toString, "", true, false)
+</sbtl>).toString, "", true, true, false)
 
-  def apply(id: String, title: String, text: String, tags: String, listed: Boolean, resetTime: Boolean): PostDraft = {
+  def apply(
+    id: String,
+    title: String,
+    text: String,
+    tags: String,
+    listed: Boolean,
+    showEdit: Boolean,
+    resetTime: Boolean): PostDraft = {
     val idOption = id match {
       case id if id.length > 1 ⇒ Some(id)
-      case _                   ⇒ None
+      case _ ⇒ None
     }
     /*
      * splits tags seperated by comma, trims them, filters out to short ones, replaces whitespace with '-'
@@ -46,11 +54,12 @@ object PostDraft {
       text,
       tags.split(',').map(_.trim).filter(_.length > 1).map(_.replaceAll("\\s", "-")).sortBy(_.toString).toList,
       listed,
+      showEdit,
       resetTime)
   }
 
-  def unapplyToStrings(draft: PostDraft): Option[(String, String, String, String, Boolean, Boolean)] =
-    Some((draft.id.getOrElse(""), draft.title, draft.text, draft.tags.mkString("", ", ", ""), draft.listed, draft.resetTime))
+  def unapplyToStrings(draft: PostDraft): Option[(String, String, String, String, Boolean, Boolean, Boolean)] =
+    Some((draft.id.getOrElse(""), draft.title, draft.text, draft.tags.mkString("", ", ", ""), draft.listed, draft.showEdit, draft.resetTime))
 
   /**
    * Creates a draft from a post
@@ -59,7 +68,7 @@ object PostDraft {
    * @return
    */
   def createDraft(post: Post): PostDraft =
-    PostDraft(post.id, post.title, post.text, post.tags, post.listed, false)
+    PostDraft(post.id, post.title, post.text, post.tags, post.listed, post.showUpdated, false)
 
   /**
    * Creates a new post from a draft
@@ -69,7 +78,7 @@ object PostDraft {
    * @return
    */
   def createPost(draft: PostDraft, user: User): Post =
-    Post(draft.id, draft.title, user, draft.text, draft.tags, draft.listed)
+    Post(draft.id, draft.title, user, draft.text, draft.tags, draft.listed, draft.showEdit)
 
   /**
    * Creates a post from a draft and an existing post
@@ -87,13 +96,15 @@ object PostDraft {
           created = newCreated,
           updated = newCreated,
           tags = draft.tags,
-          listed = draft.listed)
+          listed = draft.listed,
+          showUpdated = draft.showEdit)
       case false ⇒
         origPost.copy(title = draft.title,
           updated = new DateTime(),
           text = draft.text,
           tags = draft.tags,
-          listed = draft.listed)
+          listed = draft.listed,
+          showUpdated = draft.showEdit)
     }
 
   /**

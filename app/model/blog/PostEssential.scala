@@ -17,6 +17,7 @@ trait PostEssential {
   val text: String
   val tags: List[String]
   val listed: Boolean
+  val showUpdated: Boolean
 }
 
 object PostEssential {

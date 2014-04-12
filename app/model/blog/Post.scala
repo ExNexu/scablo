@@ -21,7 +21,8 @@ case class Post(
   override val updated: DateTime,
   override val text: String,
   override val tags: List[String],
-  override val listed: Boolean)
+  override val listed: Boolean,
+  override val showUpdated: Boolean)
     extends DBEntity with PostEssential {
 
 }
@@ -34,13 +35,14 @@ object Post {
     author: User,
     text: String,
     tags: List[String],
-    listed: Boolean): Post = {
+    listed: Boolean,
+    showUpdated: Boolean): Post = {
     val time = new DateTime()
-    new Post(id, makeRelUrl(title, time), title, author, time, time, text, tags, listed)
+    new Post(id, makeRelUrl(title, time), title, author, time, time, text, tags, listed, showUpdated)
   }
 
-  def apply(title: String, author: User, text: String, tags: List[String], listed: Boolean): Post =
-    Post(None, title, author, text, tags, listed)
+  def apply(title: String, author: User, text: String, tags: List[String], listed: Boolean, showUpdated: Boolean): Post =
+    Post(None, title, author, text, tags, listed, showUpdated)
 
   // method inspired by julienrf's tyco found at https://github.com/julienrf/tyco
   private def makeRelUrl(title: String, date: DateTime): String = {

@@ -25,6 +25,7 @@ case class PostEnriched(
   override val text: String,
   override val tags: List[String],
   override val listed: Boolean,
+  override val showUpdated: Boolean,
   /*
    * enriched fields
    */
@@ -54,6 +55,7 @@ object PostEnriched {
       post.text,
       post.tags,
       post.listed,
+      post.showUpdated,
       dateRelUrlformat.print(post.created),
       dateStringformat.print(post.created),
       dateRelUrlformat.print(post.updated),
