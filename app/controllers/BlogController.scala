@@ -117,14 +117,12 @@ object BlogController extends BaseController {
    * @param name
    * @return
    */
-  def file(name: String) = Action {
+  def file(name: String) = Action.async {
     val file = fileDataService.getByName(name)
-    Async {
-      file map { file ⇒
-        file match {
-          case Some(file) ⇒ Ok.sendFile(file, true)
-          case None       ⇒ redirectToRoot
-        }
+    file map { file ⇒
+      file match {
+        case Some(file) ⇒ Ok.sendFile(file, true)
+        case None       ⇒ redirectToRoot
       }
     }
   }
