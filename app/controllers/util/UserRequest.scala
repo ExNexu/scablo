@@ -69,7 +69,7 @@ trait UserRequest extends Controller with BlogRoutes {
     * @param session Implicit session
     * @return The Result
     */
-  protected def withUserOption(fn: Option[User] => Result)(implicit session: Session): Result =
+  protected def withUserOption[R <: Result](fn: Option[User] => R)(implicit session: Session): R =
     fn(getUser())
 
   private def noUserFn(): Result = doLogout()

@@ -1,6 +1,7 @@
 package controllers
 
 import scala.concurrent.ExecutionContext.Implicits.global
+import scala.concurrent.Future
 
 import org.joda.time.DateTime
 
@@ -279,33 +280,36 @@ object BlogController extends BaseController {
    *
    * @return
    */
-  def search = Action {
+  def search = Action.async {
     implicit request ⇒
-      withUserOption {
-        userOption ⇒
-          {
-            searchForm.bindFromRequest().fold(
-              formWithErrors ⇒ {
-                redirectToRoot
-              }, term ⇒ {
-                val searchResult = postEnrichedDataService.search(term)
-                val breadcrumb = List(
-                  homeBcItem,
-                  BreadcrumbItem("\"" + term + "\"", None, Some("icon-search")))
-                Async {
-                  searchResult map { searchResult ⇒
-                    val pagename = "Search: \"" + term + "\""
-                    Ok(views.html.content.postListing(
+      {
+        searchForm.bindFromRequest().fold(
+          formWithErrors ⇒ {
+            Future(redirectToRoot)
+          }, term ⇒ {
+            val searchResult = postEnrichedDataService.search(term)
+            val breadcrumb = List(
+              homeBcItem,
+              BreadcrumbItem("\"" + term + "\"", None, Some("icon-search"))
+            )
+            searchResult map { searchResult ⇒
+              withUserOption {
+                userOption ⇒
+                  val pagename = "Search: \"" + term + "\""
+                  Ok(
+                    views.html.content.postListing(
                       title(pagename),
                       MetaTags(pagename),
                       userOption,
                       breadcrumb,
                       SidebarContainer(),
-                      searchResult))
-                  }
-                }
-              })
+                      searchResult
+                    )
+                  )
+              }
+            }
           }
+        )
       }
   }
 
