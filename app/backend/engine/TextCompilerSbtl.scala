@@ -1,8 +1,6 @@
 package backend.engine
 
-import scala.xml.{ Attribute, Elem, Node, NodeSeq, XML, Xhtml }
-import scala.xml.{ Null, Text }
-import scala.xml.NodeSeq.seqToNodeSeq
+import scala.xml._
 import play.api.Play
 
 /**
@@ -72,55 +70,41 @@ class TextCompilerSbtl() extends TextCompiler {
 
   private def compileText(nodes: NodeSeq): NodeSeq =
     nodes flatMap {
-      node =>
-        node match {
-          case <text>{ contents @ _* }</text> => <div class="text">{ compile(contents) }</div>
-          case _ => throw new TextCompileException("Could not find text tag in " + nodes + "!")
-        }
+      case <text>{ contents @ _* }</text> => <div class="text">{ compile(contents) }</div>
+      case _ => throw new TextCompileException("Could not find text tag in " + nodes + "!")
     }
 
   private def compileTextAbstract(nodes: NodeSeq): NodeSeq =
     nodes flatMap {
-      node =>
-        node match {
-          case <abstract>{ contents @ _* }</abstract> => <div class="abstract">{ compile(contents) }</div>
-          case _ => throw new TextCompileException("Could not find abstract tag in " + nodes + "!")
-        }
+      case <abstract>{ contents @ _* }</abstract> => <div class="abstract">{ compile(contents) }</div>
+      case _ => throw new TextCompileException("Could not find abstract tag in " + nodes + "!")
     }
 
   private def compile(nodes: NodeSeq): NodeSeq =
     nodes flatMap {
-      node =>
-        node match {
-          case <p>{ contents @ _* }</p> => <p>{ compile(contents) }</p>
-          case <b>{ contents @ _* }</b> => <b>{ compile(contents) }</b>
-          case <i>{ contents @ _* }</i> => <i>{ compile(contents) }</i>
-          case <ul>{ contents @ _* }</ul> => <ul>{ compile(contents) }</ul>
-          case <li>{ contents @ _* }</li> => <li>{ compile(contents) }</li>
-          case h @ <h1>{ titleNode }</h1> => compileHeader(h, titleNode, 1)
-          case h @ <h2>{ titleNode }</h2> => compileHeader(h, titleNode, 2)
-          case ref @ <ref>{ contents @ _* }</ref> => compileRef(ref, contents)
-          case blockquote @ <blockquote>{ contents @ _* }</blockquote> => compileBlockquote(blockquote, contents)
-          case intref @ <intref>{ contents @ _* }</intref> => intref
-          case <footnote>{ contents @ _* }</footnote> => compileFootnote(contents)
-          case gist @ <gist>{ contents @ _* }</gist> => compileGistCode(gist, contents)
-          case img @ <img>{ contents @ _* }</img> => compileImg(img, contents)
-          case contents if !contents.exists(_.toString.exists(_ == '<')) => contents
-          case contents => throw new TextCompileException("Could not compile " + contents + "!")
-        }
+      case <p>{ contents @ _* }</p> => <p>{ compile(contents) }</p>
+      case <b>{ contents @ _* }</b> => <b>{ compile(contents) }</b>
+      case <i>{ contents @ _* }</i> => <i>{ compile(contents) }</i>
+      case <ul>{ contents @ _* }</ul> => <ul>{ compile(contents) }</ul>
+      case <li>{ contents @ _* }</li> => <li>{ compile(contents) }</li>
+      case h @ <h1>{ titleNode }</h1> => compileHeader(h, titleNode, 1)
+      case h @ <h2>{ titleNode }</h2> => compileHeader(h, titleNode, 2)
+      case ref @ <ref>{ contents @ _* }</ref> => compileRef(ref, contents)
+      case blockquote @ <blockquote>{ contents @ _* }</blockquote> => compileBlockquote(blockquote, contents)
+      case intref @ <intref>{ contents @ _* }</intref> => intref
+      case <footnote>{ contents @ _* }</footnote> => compileFootnote(contents)
+      case gist @ <gist>{ contents @ _* }</gist> => compileGistCode(gist, contents)
+      case img @ <img>{ contents @ _* }</img> => compileImg(img, contents)
+      case contents if !contents.exists(_.toString.exists(_ == '<')) => contents
+      case contents => throw new TextCompileException("Could not compile " + contents + "!")
     }
 
   private def compileIntRefs(nodes: NodeSeq): NodeSeq =
     nodes flatMap {
-      node =>
-        {
-          node match {
-            case intref @ <intref>{ contents @ _* }</intref> => compileIntRef(intref, contents)
-            case Elem(prefix, label, attributes, scope, child @ _*) =>
-              Elem(prefix, label, attributes, scope, false, compileIntRefs(child): _*)
-            case node => node
-          }
-        }
+      case intref @ <intref>{ contents @ _* }</intref> => compileIntRef(intref, contents)
+      case Elem(prefix, label, attributes, scope, child @ _*) =>
+        Elem(prefix, label, attributes, scope, false, compileIntRefs(child): _*)
+      case node => node
     }
 
   private def compileIntRef(intRefNode: Node, intRefContents: NodeSeq): NodeSeq = {
@@ -194,12 +178,11 @@ class TextCompilerSbtl() extends TextCompiler {
     val origin = refs.find(ref => ref.link == link && ref.author == author && ref.title == title)
     val number = origin match {
       case Some(tag) => tag.number
-      case None => {
+      case None =>
         val nr = refNumber
         refs = Ref(nr, link, author, title) :: refs
         refNumber += 1
         nr
-      }
     }
     if (link.isEmpty && (title.isEmpty || author.isEmpty))
       throw new TextCompileException("Reflike node " + refLikeNode + " has no link or no author and title!")
@@ -397,47 +380,43 @@ class TextCompilerSbtl() extends TextCompiler {
 
   private def compilePreviewAbstract(nodes: NodeSeq): NodeSeq =
     nodes flatMap {
-      node =>
-        node match {
-          case <sbtl>{ contents @ _* }</sbtl> => contents.flatMap(compilePreviewAbstract(_))
-          case <abstract>{ contents @ _* }</abstract> => contents.flatMap(compilePreviewAbstract(_))
-          case <text>{ contents @ _* }</text> => NodeSeq.Empty
-          case <b>{ contents @ _* }</b> => <b>{ compilePreviewAbstract(contents) }</b>
-          case <i>{ contents @ _* }</i> => <i>{ compilePreviewAbstract(contents) }</i>
-          case ref @ <ref>{ contents @ _* }</ref> => compilePreviewRef(ref, contents)
-          case <footnote>{ contents @ _* }</footnote> => NodeSeq.Empty
-          case contents if !contents.exists(_.toString.exists(_ == '<')) => contents
-          case contents => throw new TextCompileException("Could not compile " + contents + " for abstract!")
-        }
+      case <sbtl>{ contents @ _* }</sbtl> => contents.flatMap(compilePreviewAbstract(_))
+      case <abstract>{ contents @ _* }</abstract> => contents.flatMap(compilePreviewAbstract(_))
+      case <text>{ contents @ _* }</text> => NodeSeq.Empty
+      case <b>{ contents @ _* }</b> => <b>{ compilePreviewAbstract(contents) }</b>
+      case <i>{ contents @ _* }</i> => <i>{ compilePreviewAbstract(contents) }</i>
+      case ref @ <ref>{ contents @ _* }</ref> => compilePreviewRef(ref, contents)
+      case <footnote>{ contents @ _* }</footnote> => NodeSeq.Empty
+      case contents if !contents.exists(_.toString.exists(_ == '<')) => contents
+      case contents => throw new TextCompileException("Could not compile " + contents + " for abstract!")
     }
 
   private def compilePreviewRef(refNode: Node, refContent: NodeSeq): NodeSeq = {
     val link = getAttribute(refNode, "link")
     link match {
       case Some(link) =>
-        {
-          val author = getAttribute(refNode, "author")
-          val title = getAttribute(refNode, "title")
-          val contents = compile(refContent)
-          val titleText = getTitleTextForRef(Some(link), author, title)
-          if (!link.contains(externEvidence))
-            <a href={ baseBlogUrl + link } title={ titleText } target="_blank">{ contents }</a>
-          else
-            <a href={ link } title={ titleText } target="_blank">
-              { contents }
-              <i class="icon-external-link"></i>
-            </a>
-        }
+        val author = getAttribute(refNode, "author")
+        val title = getAttribute(refNode, "title")
+        val contents = compile(refContent)
+        val titleText = getTitleTextForRef(Some(link), author, title)
+        if (!link.contains(externEvidence))
+          <a href={ baseBlogUrl + link } title={ titleText } target="_blank">{ contents }</a>
+        else
+          <a href={ link } title={ titleText } target="_blank">
+            { contents }
+            <i class="icon-external-link"></i>
+          </a>
       case None => compilePreviewAbstract(refContent)
     }
   }
 
-  private case class InternReference(val name: String, val title: String)
-  private case class Footnote(val number: Int, val content: NodeSeq)
-  private case class Header(val numeration: String, val title: String, val name: Option[String] = None)
+  private case class InternReference(name: String, title: String)
+  private case class Footnote(number: Int, content: NodeSeq)
+  private case class Header(numeration: String, title: String, name: Option[String] = None)
   private case class Ref(
-    val number: Int,
-    val link: Option[String],
-    val author: Option[String],
-    val title: Option[String])
+    number: Int,
+    link: Option[String],
+    author: Option[String],
+    title: Option[String]
+  )
 }
