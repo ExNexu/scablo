@@ -85,7 +85,7 @@ class TextCompilerSbtl() extends TextCompiler {
       case <p>{ contents @ _* }</p> => <p>{ compile(contents) }</p>
       case <b>{ contents @ _* }</b> => <b>{ compile(contents) }</b>
       case <i>{ contents @ _* }</i> => <i>{ compile(contents) }</i>
-      case <code>{ contents @ _* }</code> => <code>{ compile(contents) }</code>
+      case <c>{ contents @ _* }</c> => <code>{ compile(contents) }</code>
       case <ul>{ contents @ _* }</ul> => <ul>{ compile(contents) }</ul>
       case <li>{ contents @ _* }</li> => <li>{ compile(contents) }</li>
       case h @ <h1>{ titleNode }</h1> => compileHeader(h, titleNode, 1)
