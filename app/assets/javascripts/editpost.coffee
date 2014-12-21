@@ -15,6 +15,7 @@ CodeMirror.xmlHints['<sbtl><abstract><'] =
 [
   'b'
   'i'
+  'c'
   'ref'
   'footnote'
 ]
@@ -34,6 +35,7 @@ CodeMirror.xmlHints['<sbtl><text><p><'] =
 [
   'b'
   'i'
+  'c'
   'ref'
   'intref'
   'footnote'
@@ -51,6 +53,7 @@ CodeMirror.xmlHints['<sbtl><text><img><'] =
 [
   'b'
   'i'
+  'c'
   'ref'
   'intref'
   'footnote'
